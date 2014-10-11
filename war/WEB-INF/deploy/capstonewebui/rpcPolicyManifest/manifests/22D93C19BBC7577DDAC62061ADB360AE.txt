@@ -1,0 +1,2 @@
+serviceClass: com.capstonewebui.client.GreetingService
+path: 70432FCB850072B84852D8F0B44D8671.gwt.rpc

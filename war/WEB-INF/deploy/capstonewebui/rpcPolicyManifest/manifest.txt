@@ -1,0 +1,2 @@
+# Module capstonewebui
+# RPC service class, partial path of RPC policy file
