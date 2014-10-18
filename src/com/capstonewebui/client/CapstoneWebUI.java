@@ -116,12 +116,14 @@ public class CapstoneWebUI implements EntryPoint {
 		//worldBuilderPanel Creation
 		
 		
-		final MapUI worldBuilderPanel = new MapUI();
+		final LocationCreationForm worldBuilderPanel = new LocationCreationForm();
 		
 		
 		
-		RootPanel.get("contentPanel").add(logInPanel);
-		RootPanel.get("contentPanel").add(menuPanel);
+		//RootPanel.get("contentPanel").add(logInPanel);
+		//RootPanel.get("contentPanel").add(menuPanel);
+		
+		worldBuilderPanel.setVisible(true); //testing
 		RootPanel.get("contentPanel").add(worldBuilderPanel);
 		
 		//test button
@@ -217,39 +219,7 @@ public class CapstoneWebUI implements EntryPoint {
 					*/
 				}
 
-				/*
-				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
-				textToServerLabel.setText(textToServer);
-				serverResponseLabel.setText("");
-				greetingService.greetServer(textToServer,
-						new AsyncCallback<String>() {
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-
-							public void onSuccess(String result) {
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(result);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
-						
-						
-						
 			}
-			*/
-		}
 
 	
 		// Add a handler to send the name to the server
