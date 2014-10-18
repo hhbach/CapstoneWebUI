@@ -1,6 +1,5 @@
 package com.capstonewebui.client;
 
-import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
