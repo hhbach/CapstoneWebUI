@@ -55,75 +55,26 @@ public class CapstoneWebUI implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
+	
+	static MenuPanel menuPanel;
+	static LoginPanel logInPanel;
+	static LocationCreationForm worldBuilderPanel;
+	
 	public void onModuleLoad() {
 		
 		//Login Panel
-			//widget declarations
-		final AbsolutePanel logInPanel = new AbsolutePanel();
-		TextBox userNameTextBox = new TextBox();
-		PasswordTextBox passwordTextBox = new PasswordTextBox();
-		Grid grid = new Grid(3, 2);
-		
-		
-			//adding widgets to login Panel
-		grid.setWidget(0, 0, new Label("UserName"));
-		grid.setWidget(0, 1, userNameTextBox);
-		grid.setWidget(1, 1, passwordTextBox);
-		grid.setWidget(1, 0, new Label("password"));
-		logInPanel.setSize("800px", "800px");
-		
-		Button logInButton = new Button("Log In");
-		Button forgotPasswordButton = new Button("Forgot Password");
-		grid.setWidget(2, 0, forgotPasswordButton);
-		grid.setWidget(2, 1, logInButton);
-		grid.setStyleName("centered");
-		grid.addStyleName("bordered");
-		
-		logInPanel.add(grid);
+		logInPanel = new LoginPanel();
 		
 		//Menu Option
-		final AbsolutePanel menuPanel = new AbsolutePanel();
-		menuPanel.setVisible(true);
+		menuPanel = new MenuPanel();
+	
 		
-		Grid menuGrid = new Grid(5, 1);
-		menuGrid.setStyleName("centered");
-		Button buildWorldButton = new Button("Build World");
-		
-		Button manageWorldsButton = new Button("Manage Worlds");
-		manageWorldsButton.setStyleName("alignedCenter");
-		Button interactButton = new Button("Interact With Players");
-		interactButton.setStyleName("alignedCenter");
-		Button tutorialButton = new Button("Tutorial");
-		tutorialButton.setStyleName("alignedCenter");
-		menuGrid.getCellFormatter();
-		
-		menuGrid.setWidget(0,0, buildWorldButton);
-		menuGrid.setWidget(1,0, manageWorldsButton);
-		menuGrid.setWidget(2, 0, interactButton);
-		menuGrid.setWidget(3,0, tutorialButton);
-		
-		
-		menuPanel.add(menuGrid);
-		menuPanel.setVisible(false);
-		
-		//attempt at centering cell contents
-		//HTMLTable.CellFormatter formatter = menuGrid.getCellFormatter();
-		 //formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
-		 //formatter.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
-		 //formatter.setVerticalAlignment(2, 0, HasVerticalAlignment.ALIGN_MIDDLE);
-		 //formatter.setVerticalAlignment(3, 0, HasVerticalAlignment.ALIGN_MIDDLE);
-		
-		//worldBuilderPanel Creation
-		
-		
-		final LocationCreationForm worldBuilderPanel = new LocationCreationForm();
+		worldBuilderPanel = new LocationCreationForm();
 		
 		
 		
-		//RootPanel.get("contentPanel").add(logInPanel);
-		//RootPanel.get("contentPanel").add(menuPanel);
-		
-		worldBuilderPanel.setVisible(true); //testing
+		RootPanel.get("contentPanel").add(logInPanel);
+		RootPanel.get("contentPanel").add(menuPanel);
 		RootPanel.get("contentPanel").add(worldBuilderPanel);
 		
 		//test button
@@ -183,59 +134,13 @@ public class CapstoneWebUI implements EntryPoint {
 		*/
 
 		// Create a handler for the sendButton and nameField
-		class MyHandler implements ClickHandler, KeyUpHandler {
-			/**
-			 * Fired when the user clicks on the sendButton.
-			 */
-			public void onClick(ClickEvent event) {
-				//sendNameToServer();
-				sendNameToServer();
-			}
 
-			/**
-			 * Fired when the user types in the nameField.
-			 */
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					//sendNameToServer();
-				}
-			}
-
-			/**
-			 * Send the name from the nameField to the server and wait for a response.
-			 */
-			
-			
-			private void sendNameToServer() {
-				// First, we validate the input.
-				logInPanel.setVisible(false);
-				menuPanel.setVisible(true);
-				/*
-				errorLabel.setText("");
-				String textToServer = nameField.getText();
-				if (!FieldVerifier.isValidName(textToServer)) {
-					errorLabel.setText("Please enter at least four characters");
-					return;
-					*/
-				}
-
-			}
 
 	
 		// Add a handler to send the name to the server
-		MyHandler handler = new MyHandler();
+		//MyHandler handler = new MyHandler();
 		//sendButton.addClickHandler(handler);
-		logInButton.addClickHandler(handler);
-		buildWorldButton.addClickHandler(new ClickHandler()
-		{
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				menuPanel.setVisible(false);
-				worldBuilderPanel.setVisible(true);
-				
-			}
-		});
+		
 		//nameField.addKeyUpHandler(handler);
 		
 	

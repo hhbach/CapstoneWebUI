@@ -21,6 +21,7 @@ public class LocationCreationForm extends AbsolutePanel{
 
 		addLabelToPanel();
 		addSecondColumnContent();
+		addThirdColumn();
 		
 		this.add(worldBuilderGrid);
 		
