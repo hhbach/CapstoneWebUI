@@ -1,5 +1,7 @@
 package com.capstonewebui.client;
 
+import sun.security.acl.WorldGroupImpl;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -14,11 +16,11 @@ public class MenuPanel extends AbsolutePanel{
 	public MenuPanel() {
 		Grid menuGrid = new Grid(5, 1);
 		menuGrid.setStyleName("centered");
-		Button buildWorldButton = new Button("Build World");
+		Button buildWorldButton = new Button("Create World");
 		
 		Button manageWorldsButton = new Button("Manage Worlds");
 		manageWorldsButton.setStyleName("alignedCenter");
-		Button interactButton = new Button("Interact With Players");
+		Button interactButton = new Button("Interact with Players");
 		interactButton.setStyleName("alignedCenter");
 		Button tutorialButton = new Button("Tutorial");
 		tutorialButton.setStyleName("alignedCenter");
@@ -31,6 +33,8 @@ public class MenuPanel extends AbsolutePanel{
 		
 		MyHandler handler = new MyHandler();
 		buildWorldButton.addClickHandler(handler);
+		manageWorldsButton.addClickHandler(new MenuManagerHandler());
+		
 		this.add(menuGrid);
 		this.setVisible(false);
 	}
@@ -58,8 +62,35 @@ public class MenuPanel extends AbsolutePanel{
 		
 		private void sendNameToServer() {
 			CapstoneWebUI.menuPanel.setVisible(false);
-			CapstoneWebUI.worldBuilderPanel.setVisible(true);
+			CapstoneWebUI.worldCreationForm.setVisible(true);
 			
+			}
+
+		}
+	
+	class MenuManagerHandler implements ClickHandler, KeyUpHandler {
+		/**
+		 * Fired when the user clicks on the sendButton.
+		 */
+		public void onClick(ClickEvent event) {
+			//sendNameToServer();
+			loadWorldsManagerPanel();
+		}
+
+		/**
+		 * Fired when the user types in the nameField.
+		 */
+		public void onKeyUp(KeyUpEvent event) {
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+				//sendNameToServer();
+			}
+		}
+
+		
+		
+		private void loadWorldsManagerPanel() {
+			CapstoneWebUI.menuPanel.setVisible(false);
+			CapstoneWebUI.worldManagerPanel.setVisible(true);
 			}
 
 		}

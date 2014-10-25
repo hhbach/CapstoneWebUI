@@ -80,4 +80,82 @@ h1 {
 	border: green solid;
 }
 
-.
+.worldCreationPanel {
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 50px;
+	width: 798px;
+}
+
+.mainPanel {
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
+.leftFormPanel {
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 400px;
+}
+
+.rightFormPanel {
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 400px;
+}
+
+.locationListHeader {
+  background-color: #2062B8;
+  color: white;
+  font-style: italic;
+}
+
+.descriptionTextArea {
+  max-height: 65px;
+  min-height: 65px;
+  max-width: 265px;
+  min-width: 265px;
+  margin-left: 15px;
+}
+
+.locationsFlexTable {
+	padding-top:5px;
+	padding-bottom:5px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
+}
+
+.namePanel{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.descriptionPanel{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.addLocationPanel{
+	padding-left:32%;
+}
+
+.discardButton{
+	width:100px;
+	margin-right:15px;
+}
+
+.saveButton{
+	width:100px;
+	margin-left:15px;
+}
+
+.discardSavePanel{
+	padding-left:80px;
+	padding-top:20px;
+}
+
+.nameTextBox{
+	margin-left:45px;
+}

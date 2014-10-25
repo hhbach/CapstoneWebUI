@@ -58,8 +58,9 @@ public class CapstoneWebUI implements EntryPoint {
 	
 	static MenuPanel menuPanel;
 	static LoginPanel logInPanel;
-	static LocationCreationForm worldBuilderPanel;
-	
+	static LocationCreationForm locationCreationPanel;
+	static ManageWorldsPanel worldManagerPanel;
+	static WorldCreationForm worldCreationForm;
 	public void onModuleLoad() {
 		
 		//Login Panel
@@ -69,80 +70,20 @@ public class CapstoneWebUI implements EntryPoint {
 		menuPanel = new MenuPanel();
 	
 		
-		worldBuilderPanel = new LocationCreationForm();
+		locationCreationPanel = new LocationCreationForm();
+		worldManagerPanel = new ManageWorldsPanel();
+		worldCreationForm = new WorldCreationForm();
 		
-		
+		RootPanel.get("contentPanel").add(worldCreationForm);
 		
 		RootPanel.get("contentPanel").add(logInPanel);
 		RootPanel.get("contentPanel").add(menuPanel);
-		RootPanel.get("contentPanel").add(worldBuilderPanel);
+		//logInPanel.setVisible(false);
+		RootPanel.get("contentPanel").add(locationCreationPanel);
 		
-		//test button
-
-		/*
-		final Button sendButton = new Button("Send");
-		final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
-		final Label errorLabel = new Label();
-
-		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
-
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
-
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
-		*/
-
-		// Create the popup dialog box
-		/*
-		final DialogBox dialogBox = new DialogBox();
-		dialogBox.setText("Remote Procedure Call");
-		dialogBox.setAnimationEnabled(true);
-		final Button closeButton = new Button("Close");
-		// We can set the id of a widget by accessing its Element
-		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
-		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-		dialogVPanel.add(textToServerLabel);
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogVPanel.add(closeButton);
-		dialogBox.setWidget(dialogVPanel);
-		
-		// Add a handler to close the DialogBox
-		closeButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-				
-				//setting div to be visible;
-				//DOM.getElementById("logInPanel").getStyle().setVisibility(Visibility.HIDDEN);
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
-			}
-		});
-		
-		*/
-
-		// Create a handler for the sendButton and nameField
-
-
-	
-		// Add a handler to send the name to the server
-		//MyHandler handler = new MyHandler();
-		//sendButton.addClickHandler(handler);
-		
-		//nameField.addKeyUpHandler(handler);
-		
+		//locationCreationPanel.setVisible(true);
+		//worldBuilderPanel.setVisible(true);
+		//RootPanel.get("contentPanel").add(worldManagerPanel);
 	
 	}
 	
