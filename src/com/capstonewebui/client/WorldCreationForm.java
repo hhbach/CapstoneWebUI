@@ -79,6 +79,7 @@ public class WorldCreationForm extends AbsolutePanel {
 			public void onClick(ClickEvent event) {
 				
 				CapstoneWebUI.worldCreationForm.setVisible(false);
+				CapstoneWebUI.locationCreationPanel.populateAvailableLocationLists(locationsArray);
 				CapstoneWebUI.locationCreationPanel.setVisible(true);
 				//map.removeFromParent();
 				//map = null;
@@ -195,8 +196,6 @@ public class WorldCreationForm extends AbsolutePanel {
 
 	    // Add a marker
 	    map.addOverlay(new Marker(brickyardEng));
-
-
 	    return map;
 	  }
 	
@@ -218,10 +217,7 @@ public class WorldCreationForm extends AbsolutePanel {
 						System.out.println("saved!");
 					}
 				});
-					
-			
-			
-			
+
 		}
 		
 	}

@@ -1,5 +1,7 @@
 package com.capstonewebui.client;
 
+import java.util.ArrayList;
+
 import com.capstonewebui.shared.LocationObject;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,6 +39,9 @@ public class LocationCreationForm extends AbsolutePanel{
 	private CheckBox lockedCB;
 	private CheckBox visitedCB;
 	private PopupPanel mapPanel;
+	private ListBox locationsToUnlock;
+	private ListBox locationsToRetire;
+	
 	public LocationCreationForm() {
 		this.setVisible(false);
 		this.setSize("800px", "800px");
@@ -148,11 +153,11 @@ public class LocationCreationForm extends AbsolutePanel{
 		lockedCB = new CheckBox();
 		worldBuilderGrid.setWidget(7, 1, lockedCB);
 		
-		ListBox locationToUnlockTB = new ListBox();
-		worldBuilderGrid.setWidget(8, 1, locationToUnlockTB);
+		locationsToUnlock = new ListBox();
+		worldBuilderGrid.setWidget(8, 1, locationsToUnlock);
 		
-		ListBox locationToRetireTB = new ListBox();
-		worldBuilderGrid.setWidget(9, 1, locationToRetireTB);
+		locationsToRetire = new ListBox();
+		worldBuilderGrid.setWidget(9, 1, locationsToRetire);
 	}
 	
 	//third column houses optional option for each field.
@@ -162,6 +167,13 @@ public class LocationCreationForm extends AbsolutePanel{
 		worldBuilderGrid.setWidget(4, 2, map2Button);
 		worldBuilderGrid.setText(5, 2, " meters");
 		map2Button.addClickHandler(new MapLauncherHandler());
+	}
+	
+	private void clearPanel()
+	{
+		longitudeTB.setText("");
+		latitudeTB.setText("");
+		
 	}
 	
 	private void addNavigationButtons()
@@ -218,8 +230,26 @@ public class LocationCreationForm extends AbsolutePanel{
 	{
 		nameTB.setText("");
 		descriptionTB.setText("");
-		
+		descriptionTB.setText("");
+		nameTB.setText("");
+		lockedCB.setValue(false);
+		visitedCB.setValue(false);
+		locationsToRetire.clear();
+		locationsToUnlock.clear();
 	}
+	
+	public void populateAvailableLocationLists(ArrayList<LocationObject> locations)
+	{
+		clearFields();
+		
+		int locationSize = locations.size();
+		for(int i = 0; i < locationSize; i++ )
+		{
+			locationsToUnlock.addItem(locations.get(i).locationName);
+			locationsToRetire.addItem(locations.get(i).locationName);
+		}
+	}
+	
 	
 	class MapLauncherHandler implements ClickHandler
 	{
@@ -276,5 +306,6 @@ public class LocationCreationForm extends AbsolutePanel{
 		}
 		
 	}
+	
 	
 }

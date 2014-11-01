@@ -13,17 +13,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class DatabaseHandlerImpl extends RemoteServiceServlet implements
 DatabaseHandler {
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6830493241011313788L;
 
 	@Override
 	public String greetServer(String name) throws IllegalArgumentException {
 		return "hello Albert";
-		
-
 	}
 	
 	private Entity createEntity(LocationObject location)
@@ -38,7 +32,6 @@ DatabaseHandler {
 		w.setProperty("Visited", location.visited);
 		w.setProperty("Locations to Unlock", location.locationToUnlock);
 		w.setProperty("Locations to Lock", location.locationToRetire);
-		
 		return w;
 	}
 
