@@ -1,5 +1,6 @@
 package com.capstonewebui.client;
 
+import com.capstonewebui.shared.LocationObject;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,8 +31,11 @@ public class LocationCreationForm extends AbsolutePanel{
 	private MapWidget map;
 	private TextBox longitudeTB;
 	private TextBox latitudeTB;
+	private TextBox descriptionTB;
 	private TextBox nameTB;
 	private Grid worldBuilderGrid;
+	private CheckBox lockedCB;
+	private CheckBox visitedCB;
 	private PopupPanel mapPanel;
 	public LocationCreationForm() {
 		this.setVisible(false);
@@ -96,19 +100,6 @@ public class LocationCreationForm extends AbsolutePanel{
 	{
 		mapPanel = new PopupPanel();
 		mapPanel.setSize("800px", "800px");
-		//mapPanel.setText("Remote Procedure Call");
-		//mapPanel.setAnimationEnabled(true);
-		
-		//Label selectLocationLabel = new Label("Please select a location: ");
-		
-	/*
-	   Maps.loadMapsApi("", "2", false, new Runnable() {
-		      public void run() {
-		        //buildMapUI();
-		      }
-		    });
-		   */
-		
 	}
 	
 	private void addLabelToPanel()
@@ -138,7 +129,7 @@ public class LocationCreationForm extends AbsolutePanel{
 		nameTB = new TextBox();
 		worldBuilderGrid.setWidget(1, 1, nameTB);
 		
-		TextBox descriptionTB = new TextBox();
+		descriptionTB = new TextBox();
 		worldBuilderGrid.setWidget(2, 1, descriptionTB);
 		
 		longitudeTB = new TextBox();
@@ -151,10 +142,10 @@ public class LocationCreationForm extends AbsolutePanel{
 		worldBuilderGrid.setWidget(5, 1, discoveryRadiusTB);
 
 		
-		CheckBox visitedCB = new CheckBox();
+		visitedCB = new CheckBox();
 		worldBuilderGrid.setWidget(6, 1, visitedCB);
 		
-		CheckBox lockedCB = new CheckBox();
+		lockedCB = new CheckBox();
 		worldBuilderGrid.setWidget(7, 1, lockedCB);
 		
 		ListBox locationToUnlockTB = new ListBox();
@@ -182,6 +173,10 @@ public class LocationCreationForm extends AbsolutePanel{
 		AbsolutePanel navigationButtonsContainer= new AbsolutePanel();
 		navigationButtonsContainer.add(acceptButton);
 		navigationButtonsContainer.add(discardButton);
+		
+		//adds listeners
+		discardButton.addClickHandler(new CancelLocationHandler());
+		acceptButton.addClickHandler(new SaveLocationHandler());
 		
 		navigationButtonsContainer.setStyleName("navigationButtonsContainer");
 		this.add(navigationButtonsContainer);
@@ -212,12 +207,20 @@ public class LocationCreationForm extends AbsolutePanel{
 			selectedPointString = selectedPointString.replace("(", "");
 			String selectedPointStringArray[] = selectedPointString.split(",");
 			
-			longitudeTB.setText(selectedPointStringArray[0]);
-			latitudeTB.setText(selectedPointStringArray[1]);
+			longitudeTB.setText(selectedPointStringArray[1]);
+			latitudeTB.setText(selectedPointStringArray[0]);
 			
 		}
 		
 	}
+	
+	private void clearFields()
+	{
+		nameTB.setText("");
+		descriptionTB.setText("");
+		
+	}
+	
 	class MapLauncherHandler implements ClickHandler
 	{
 
@@ -237,4 +240,41 @@ public class LocationCreationForm extends AbsolutePanel{
 			
 		}
 	}	
+	
+	class SaveLocationHandler implements ClickHandler
+	{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			CapstoneWebUI.locationCreationPanel.setVisible(false);
+			CapstoneWebUI.worldCreationForm.setVisible(true);
+			
+			LocationObject location = new LocationObject();
+			location.locationName = null;
+			location.locationName = nameTB.getText();
+			location.locationDescription = descriptionTB.getText();
+			location.longitude = longitudeTB.getText();
+			location.latitude = latitudeTB.getText();
+			location.locked = lockedCB.getValue();
+			location.visited = visitedCB.getValue();
+			//location.locationToUnlock = null;
+			//location.locationToRetire = null;
+			
+			//saves the longitude and latitude back to world creation form
+			CapstoneWebUI.worldCreationForm.addLocation(location);
+		}
+		
+	}
+	
+	class CancelLocationHandler implements ClickHandler
+	{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			CapstoneWebUI.locationCreationPanel.setVisible(false);
+			CapstoneWebUI.worldCreationForm.setVisible(true);
+		}
+		
+	}
+	
 }

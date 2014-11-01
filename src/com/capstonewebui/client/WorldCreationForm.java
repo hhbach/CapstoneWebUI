@@ -1,7 +1,9 @@
 package com.capstonewebui.client;
 
+import com.capstonewebui.shared.LocationObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -13,6 +15,7 @@ import com.google.gwt.user.client.ui.Label;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.LargeMapControl;
@@ -32,6 +35,8 @@ public class WorldCreationForm extends AbsolutePanel {
 	private HorizontalPanel mapPanel = new HorizontalPanel();
 	private HorizontalPanel addLocationPanel = new HorizontalPanel();
 
+	
+	private ArrayList<LocationObject> locationsArray;
 	private TextBox nameTextBox = new TextBox();
 	private TextArea descriptionTextBox = new TextArea();
 	private Button addLocationButton = new Button("Add a Location");
@@ -44,9 +49,9 @@ public class WorldCreationForm extends AbsolutePanel {
 	private MapWidget map;
 	
 	public WorldCreationForm() {
+		
+		locationsArray = new ArrayList<LocationObject>();
 		this.setVisible(false);
-		//MyHandler handler = new MyHandler();
-		//addLocationButton.addClickHandler(handler);
 		this.add(assemblePanels());
 		
 		this.addStyleName("worldCreationPanel");
@@ -68,13 +73,15 @@ public class WorldCreationForm extends AbsolutePanel {
 		locationsFlexTable.getColumnFormatter().setWidth(2, "81px");
 		locationsFlexTable.getRowFormatter().addStyleName(0, "locationListHeader");
 
+		saveButton.addClickHandler(new SaveButtonHandler());
+		
 		addLocationButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				
 				CapstoneWebUI.worldCreationForm.setVisible(false);
 				CapstoneWebUI.locationCreationPanel.setVisible(true);
-				map.removeFromParent();
-				map = null;
+				//map.removeFromParent();
+				//map = null;
 			}
 		});
 		
@@ -108,6 +115,8 @@ public class WorldCreationForm extends AbsolutePanel {
 		      public void run() {
 		        mapPanel.add(buildMap());
 		        CapstoneWebUI.locationCreationPanel.buildMapUI();
+		        map.setVisible(false);
+		        map.setVisible(true);
 		        //buildMap().checkResizeAndCenter();
 		      }
 		});
@@ -123,9 +132,57 @@ public class WorldCreationForm extends AbsolutePanel {
 	private void assembleFlexTable(){
 		locationsFlexTable.setText(0, 0, "#");
 		locationsFlexTable.setText(0, 1, "Location");
-		locationsFlexTable.setText(0, 2, "Add/Edit");
+		locationsFlexTable.setText(0, 2, "Options");
+		locationsFlexTable.setText(0, 3, "");
 	}
 	
+	public void addLocation(final LocationObject location)
+	{
+		locationsArray.add(location);
+		final int row = locationsFlexTable.getRowCount();
+		locationsFlexTable.setText(row, 0, location.locationName);
+		locationsFlexTable.setText(row, 1, location.longitude + "," + location.latitude);
+		locationsFlexTable.setText(row, 2, "Edit/Delete");
+		Button deleteButton = new Button("Delete");
+		Button editButton = new Button("Edit");
+		
+		deleteButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				removeLocation(location.locationName);
+			}
+		});
+		
+		LatLng locationLatLng = LatLng.newInstance(Double.parseDouble(location.latitude),Double.parseDouble(location.longitude));
+		Marker newMarker = new Marker(locationLatLng);
+		
+		map.addOverlay(newMarker);
+		
+		//caption
+    	map.getInfoWindow().open(locationLatLng,
+    			new InfoWindowContent(location.locationName));
+		locationsFlexTable.setWidget(row, 2, editButton);
+		locationsFlexTable.setWidget(row, 3, deleteButton);
+		
+	}
+	
+	private void removeLocation(String a)
+	{
+		
+		int rowNumber = -1;
+		
+		//looks for the row with the matching locationName;
+		
+		for(int i = 1; i < locationsFlexTable.getRowCount(); i++)
+		{
+			if(a.compareTo(locationsFlexTable.getText(i, 0)) == 0)
+			{
+				rowNumber = i;
+			}
+		}
+		
+		locationsFlexTable.removeRow(rowNumber);
+	}
 	
 	private MapWidget buildMap() {
 	    // Open a map centered on Cawker City, KS USA
@@ -142,6 +199,32 @@ public class WorldCreationForm extends AbsolutePanel {
 
 	    return map;
 	  }
+	
+	class SaveButtonHandler implements ClickHandler
+	{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			
+			System.out.println(locationsArray.size());
+
+				//LocationObject current = locationsArray.get(i);
+				CapstoneWebUI.databaseService.storeData(locationsArray.get(0), 
+					new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+						System.out.println(caught);
+					}
+					public void onSuccess(String result) {
+						System.out.println("saved!");
+					}
+				});
+					
+			
+			
+			
+		}
+		
+	}
 	
 
 }

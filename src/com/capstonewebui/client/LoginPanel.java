@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
@@ -14,8 +15,10 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class LoginPanel extends AbsolutePanel {
 
+	private TextBox userNameTextBox;
+	
 	public LoginPanel() {
-		TextBox userNameTextBox = new TextBox();
+		userNameTextBox = new TextBox();
 		PasswordTextBox passwordTextBox = new PasswordTextBox();
 		Grid grid = new Grid(3, 2);
 		
@@ -45,7 +48,6 @@ public class LoginPanel extends AbsolutePanel {
 		 * Fired when the user clicks on the sendButton.
 		 */
 		public void onClick(ClickEvent event) {
-			//sendNameToServer();
 			sendNameToServer();
 		}
 
@@ -67,6 +69,18 @@ public class LoginPanel extends AbsolutePanel {
 			// First, we validate the input.
 			CapstoneWebUI.logInPanel.setVisible(false);
 			CapstoneWebUI.menuPanel.setVisible(true);
+			
+			/*CapstoneWebUI.databaseService.storeData("sup albert", new AsyncCallback<String>() {
+							public void onFailure(Throwable caught) {
+								userNameTextBox.setText("error");
+							}
+
+							public void onSuccess(String result) {
+							userNameTextBox.setText(result);
+							}
+						});
+			
+			/*
 			/*
 			errorLabel.setText("");
 			String textToServer = nameField.getText();
