@@ -1,6 +1,7 @@
 package com.capstonewebui.client;
 
 import com.capstonewebui.shared.LocationObject;
+import com.capstonewebui.shared.WorldObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -74,7 +75,7 @@ public class WorldCreationForm extends AbsolutePanel {
 		locationsFlexTable.getRowFormatter().addStyleName(0, "locationListHeader");
 
 		saveButton.addClickHandler(new SaveButtonHandler());
-		
+		discardButton.addClickHandler(new DiscardButtonHandler());
 		addLocationButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				
@@ -89,6 +90,7 @@ public class WorldCreationForm extends AbsolutePanel {
 		
 
 	}
+	
 	
 	private HorizontalPanel assemblePanels(){
 		assembleFlexTable();
@@ -130,6 +132,13 @@ public class WorldCreationForm extends AbsolutePanel {
 		return mainPanel;
 	}
 	
+	private void clearPanel()
+	{
+		locationsArray = null;
+		nameTextBox.setText("");
+		descriptionTextBox.setText("");
+	}
+	
 	private void assembleFlexTable(){
 		locationsFlexTable.setText(0, 0, "#");
 		locationsFlexTable.setText(0, 1, "Location");
@@ -141,8 +150,8 @@ public class WorldCreationForm extends AbsolutePanel {
 	{
 		locationsArray.add(location);
 		final int row = locationsFlexTable.getRowCount();
-		locationsFlexTable.setText(row, 0, location.locationName);
-		locationsFlexTable.setText(row, 1, location.longitude + "," + location.latitude);
+		locationsFlexTable.setText(row, 0, location.getLocationName());
+		locationsFlexTable.setText(row, 1, location.getLongitude() + "," + location.getLatitude());
 		locationsFlexTable.setText(row, 2, "Edit/Delete");
 		Button deleteButton = new Button("Delete");
 		Button editButton = new Button("Edit");
@@ -150,18 +159,18 @@ public class WorldCreationForm extends AbsolutePanel {
 		deleteButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				removeLocation(location.locationName);
+				removeLocation(location.getLongitude());
 			}
 		});
 		
-		LatLng locationLatLng = LatLng.newInstance(Double.parseDouble(location.latitude),Double.parseDouble(location.longitude));
+		LatLng locationLatLng = LatLng.newInstance(Double.parseDouble(location.getLongitude()),Double.parseDouble(location.getLongitude()));
 		Marker newMarker = new Marker(locationLatLng);
 		
 		map.addOverlay(newMarker);
 		
 		//caption
     	map.getInfoWindow().open(locationLatLng,
-    			new InfoWindowContent(location.locationName));
+    			new InfoWindowContent(location.getLocationName()));
 		locationsFlexTable.setWidget(row, 2, editButton);
 		locationsFlexTable.setWidget(row, 3, deleteButton);
 		
@@ -187,15 +196,11 @@ public class WorldCreationForm extends AbsolutePanel {
 	
 	private MapWidget buildMap() {
 	    // Open a map centered on Cawker City, KS USA
-	    LatLng brickyardEng = LatLng.newInstance(33.4236007, -111.9395375);
 
-	    map = new MapWidget(brickyardEng, 2);
+	    map = new MapWidget();
 	    map.setSize("380px", "380px");
 	    // Add some controls for the zoom level
 	    map.addControl(new LargeMapControl());
-
-	    // Add a marker
-	    map.addOverlay(new Marker(brickyardEng));
 	    return map;
 	  }
 	
@@ -204,11 +209,17 @@ public class WorldCreationForm extends AbsolutePanel {
 
 		@Override
 		public void onClick(ClickEvent event) {
+			WorldObject mWorld = new WorldObject();
+			mWorld.setWorldDescription(nameTextBox.getText());
+			mWorld.setWorldDescription(descriptionTextBox.getText());
 			
 			System.out.println(locationsArray.size());
 
-				//LocationObject current = locationsArray.get(i);
-				CapstoneWebUI.databaseService.storeData(locationsArray.get(0), 
+			
+			for(int i = 0; i < locationsArray.size(); i++)
+			{
+				locationsArray.get(i).setWorld(mWorld.getWorldName());
+				CapstoneWebUI.databaseService.storeLocation(locationsArray.get(i), 
 					new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
 						System.out.println(caught);
@@ -217,7 +228,31 @@ public class WorldCreationForm extends AbsolutePanel {
 						System.out.println("saved!");
 					}
 				});
+			}
+			
+			
+			CapstoneWebUI.databaseService.storeWorld(mWorld,new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+					System.out.println(caught);
+				}
+				public void onSuccess(String result) {
+					System.out.println("saved!");
+				}
+			});
 
+		}
+		
+	}
+	
+	class DiscardButtonHandler implements ClickHandler
+	{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			
+			CapstoneWebUI.worldCreationForm.setVisible(false);
+			CapstoneWebUI.menuPanel.setVisible(true);
+			clearPanel();
 		}
 		
 	}

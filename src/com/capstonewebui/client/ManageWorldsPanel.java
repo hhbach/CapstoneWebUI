@@ -51,6 +51,15 @@ public class ManageWorldsPanel extends AbsolutePanel{
 	editWorld.addClickHandler(new EditListHandler());
 	}
 	
+	private void getWorlds(String[] worlds)
+	{
+		for(int i = 0; i < worlds.length; i++)
+		{
+			worldsList.addItem(worlds[i]);
+		}
+	}
+	
+	
 	class DeleteListHandler implements ClickHandler, KeyUpHandler {
 
 		public void onClick(ClickEvent event) {
@@ -66,7 +75,6 @@ public class ManageWorldsPanel extends AbsolutePanel{
 			
 				mGrid.setText(1, 1, "You have deleted " + Integer.toString( + worldsList.getSelectedIndex()));
 			}
-
 		}
 	
 	class EditListHandler implements ClickHandler, KeyUpHandler {
@@ -81,7 +89,6 @@ public class ManageWorldsPanel extends AbsolutePanel{
 			}
 		}
 		private void deleteWorld() {
-			
 				mGrid.setText(1, 1, "You have edited " + Integer.toString( + worldsList.getSelectedIndex()));
 			}
 

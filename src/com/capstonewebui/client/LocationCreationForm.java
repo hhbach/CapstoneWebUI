@@ -245,8 +245,8 @@ public class LocationCreationForm extends AbsolutePanel{
 		int locationSize = locations.size();
 		for(int i = 0; i < locationSize; i++ )
 		{
-			locationsToUnlock.addItem(locations.get(i).locationName);
-			locationsToRetire.addItem(locations.get(i).locationName);
+			locationsToUnlock.addItem(locations.get(i).getLocationName());
+			locationsToRetire.addItem(locations.get(i).getLocationName());
 		}
 	}
 	
@@ -280,13 +280,13 @@ public class LocationCreationForm extends AbsolutePanel{
 			CapstoneWebUI.worldCreationForm.setVisible(true);
 			
 			LocationObject location = new LocationObject();
-			location.locationName = null;
-			location.locationName = nameTB.getText();
-			location.locationDescription = descriptionTB.getText();
-			location.longitude = longitudeTB.getText();
-			location.latitude = latitudeTB.getText();
-			location.locked = lockedCB.getValue();
-			location.visited = visitedCB.getValue();
+			//location.locationName = null;
+			location.setLocationName(nameTB.getText());
+			location.setLocationDescription(descriptionTB.getText());
+			location.setLongitude(longitudeTB.getText());
+			location.setLatitude(latitudeTB.getText());
+			location.setLocked(lockedCB.getValue());
+			location.setLocked(visitedCB.getValue());
 			//location.locationToUnlock = null;
 			//location.locationToRetire = null;
 			

@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
@@ -91,8 +92,19 @@ public class MenuPanel extends AbsolutePanel{
 		private void loadWorldsManagerPanel() {
 			CapstoneWebUI.menuPanel.setVisible(false);
 			CapstoneWebUI.worldManagerPanel.setVisible(true);
-			}
+			CapstoneWebUI.databaseService.getWorlds(
+					new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+						System.out.println("failed");
+						System.out.println(caught);
+					}
+					public void onSuccess(String result) {
+						System.out.println("read");
+					}
+					
+			});
 
 		}
 
+	}
 }

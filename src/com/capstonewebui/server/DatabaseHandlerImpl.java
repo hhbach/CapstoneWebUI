@@ -1,12 +1,20 @@
 package com.capstonewebui.server;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.capstonewebui.client.DatabaseHandler;
 import com.capstonewebui.shared.LocationObject;
+import com.capstonewebui.shared.WorldObject;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gwt.maps.client.impl.GeocoderImpl.LocationsCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
@@ -22,31 +30,51 @@ DatabaseHandler {
 	
 	private Entity createEntity(LocationObject location)
 	{
-		Entity w = new Entity("Location ID", "filler id");
-		w.setProperty("Location Name", location.locationName);
-		w.setProperty("Location Description", location.locationDescription);
-		w.setProperty("Latitude",location.latitude);
-		w.setProperty("Longitude", location.longitude);
-		w.setProperty("Disovery Radius", location.disoveryRadius);
-		w.setProperty("Locked", location.locked);
-		w.setProperty("Visited", location.visited);
-		w.setProperty("Locations to Unlock", location.locationToUnlock);
-		w.setProperty("Locations to Lock", location.locationToRetire);
+		Entity w = new Entity("location", location.getLocationName());
+		w.setProperty("Name", location.getLocationName());
+		w.setProperty("LocationDescription", location.getLocationDescription());
+		w.setProperty("Latitude",location.getLatitude());
+		w.setProperty("Longitude", location.getLongitude());
+		w.setProperty("DisoverRadius", location.getDisoveryRadius());
+		w.setProperty("Locked", location.isLocked());
+		w.setProperty("Visited", location.isLocked());
+		w.setProperty("LocationsToUnlock", location.getLocationToUnlock());
+		w.setProperty("LocationsToLock", location.getLocationToRetire());
 		return w;
 	}
 
 	@Override
-	public String storeData(LocationObject object)
+	public String storeLocation(LocationObject object)
 			throws IllegalArgumentException {
-		
-		
-		ArrayList<String> a = new ArrayList<String>();
-		a.add("bankofamerica");
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
 		Entity w = createEntity(object);
 		dss.put(w);
 		
 		return null;
 	}
+	
+	@Override
+	public String getWorlds() throws IllegalArgumentException {
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		
+		
+		PreparedQuery pq = dss.prepare(q);
+		
+		for (Entity result : pq.asIterable()) {
+			String locations = (String) result.getProperty("Name");
+			System.out.println(locations);
+		}
+		
+		System.out.println("done");
+		return null;
+	}
+
+	@Override
+	public String storeWorld(WorldObject world) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
