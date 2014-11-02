@@ -1,11 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5"
-         xmlns="http://java.sun.com/xml/ns/javaee">
-
-  <!-- Servlets -->
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<servlet>
+		<servlet-name>CapstoneGlassAPI</servlet-name>
+		<servlet-class>com.mirror.capstoneglass.CapstoneGlassAPIServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CapstoneGlassAPI</servlet-name>
+		<url-pattern>/capstoneglassapi</url-pattern>
+	</servlet-mapping>
+	
+	 <!-- Servlet For GWT -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>com.capstonewebui.server.DatabaseHandlerImpl</servlet-class>
@@ -20,5 +28,127 @@
   <welcome-file-list>
     <welcome-file>CapstoneWebUI.html</welcome-file>
   </welcome-file-list>
-
+	
+	<!-- Servlet for logging out of the web service  -->
+	
+	<servlet>
+	    <servlet-name>Logout</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>Logout</servlet-name>
+	    <url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet HelloWorld -->
+	<servlet>
+	    <servlet-name>HelloWorld</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.HelloWorldServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>HelloWorld</servlet-name>
+	    <url-pattern>/helloworld</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- Servlet Update Location for Local App Request -->
+	<servlet>
+	    <servlet-name>UpdateLocation</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.UpdateLocationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>UpdateLocation</servlet-name>
+	    <url-pattern>/update</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet Location -->
+	<servlet>
+	    <servlet-name>Location</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.LocationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>Location</servlet-name>
+	    <url-pattern>/location</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet ListWorlds -->
+	<servlet>
+	    <servlet-name>ListWorlds</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.ListWorldsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>ListWorlds</servlet-name>
+	    <url-pattern>/listworlds</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet StartWorld -->
+	<servlet>
+	    <servlet-name>RunWorld</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.RunWorldServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>RunWorld</servlet-name>
+	    <url-pattern>/runworld</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet AddUpdateWorld -->
+	<servlet>
+	    <servlet-name>AddUpdateWorld</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.AddUpdateWorldServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>AddUpdateWorld</servlet-name>
+	    <url-pattern>/addupdateworld</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet AddUpdateLocation -->
+	<servlet>
+	    <servlet-name>AddUpdateLocation</servlet-name>
+	    <servlet-class>com.mirror.capstoneglass.AddUpdateLocationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>AddUpdateLocation</servlet-name>
+	    <url-pattern>/addupdatelocation</url-pattern>
+	</servlet-mapping>	
+	<!--  Callback Servlet for Authorization  -->
+	<servlet>
+	    <servlet-name>oauth2callback</servlet-name>
+	    <servlet-class>com.google.glassware.AuthServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>oauth2callback</servlet-name>
+	    <url-pattern>/oauth2callback</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Force HTTPS -->
+	<security-constraint>
+	    <web-resource-collection>
+	    	<web-resource-name>Protected Area</web-resource-name>
+	    	<url-pattern>/*</url-pattern>
+	    </web-resource-collection>
+	    <user-data-constraint>
+	        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
+	
+	<!-- Authorization Filters (2 Filters) -->
+	
+	<filter>
+	    <filter-name>authFilter</filter-name>
+		<filter-class>com.google.glassware.AuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>authFilter</filter-name>
+	    <url-pattern>*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+	    <filter-name>reauthFilter</filter-name>
+		<filter-class>com.google.glassware.ReauthFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>reauthFilter</filter-name>
+	    <url-pattern>*</url-pattern>
+	</filter-mapping>
 </web-app>
