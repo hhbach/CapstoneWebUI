@@ -28,7 +28,16 @@ DatabaseHandler {
 		return "hello Albert";
 	}
 	
-	private Entity createEntity(LocationObject location)
+	
+	private Entity createWorldEntity(WorldObject world)
+	{
+		Entity w = new Entity("world", "tester");
+		w.setProperty("Name", world.getWorldName());
+		w.setProperty("Description", world.getWorldDescription());
+		return w;
+	}
+	
+	private Entity createLocationEntity(LocationObject location)
 	{
 		Entity w = new Entity("location", location.getLocationName());
 		w.setProperty("Name", location.getLocationName());
@@ -40,6 +49,7 @@ DatabaseHandler {
 		w.setProperty("Visited", location.isLocked());
 		w.setProperty("LocationsToUnlock", location.getLocationToUnlock());
 		w.setProperty("LocationsToLock", location.getLocationToRetire());
+		w.setProperty("World", location.getWorld());
 		return w;
 	}
 
@@ -47,11 +57,21 @@ DatabaseHandler {
 	public String storeLocation(LocationObject object)
 			throws IllegalArgumentException {
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Entity w = createEntity(object);
+		Entity w = createLocationEntity(object);
 		dss.put(w);
 		
 		return null;
 	}
+	
+	@Override
+	public String storeWorld(WorldObject world) 
+			throws IllegalArgumentException {
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Entity w = createWorldEntity(world);
+		dss.put(w);
+		return null;
+	}
+
 	
 	@Override
 	public String getWorlds() throws IllegalArgumentException {
@@ -70,11 +90,6 @@ DatabaseHandler {
 		return null;
 	}
 
-	@Override
-	public String storeWorld(WorldObject world) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 }

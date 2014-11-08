@@ -111,14 +111,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	    <url-pattern>/addupdatelocation</url-pattern>
 	</servlet-mapping>	
 	<!--  Callback Servlet for Authorization  -->
-	<servlet>
-	    <servlet-name>oauth2callback</servlet-name>
-	    <servlet-class>com.google.glassware.AuthServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	    <servlet-name>oauth2callback</servlet-name>
-	    <url-pattern>/oauth2callback</url-pattern>
-	</servlet-mapping>
 	
 	<!-- Force HTTPS -->
 	<security-constraint>
@@ -132,23 +124,5 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</security-constraint>
 	
 	<!-- Authorization Filters (2 Filters) -->
-	
-	<filter>
-	    <filter-name>authFilter</filter-name>
-		<filter-class>com.google.glassware.AuthFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>authFilter</filter-name>
-	    <url-pattern>*</url-pattern>
-	</filter-mapping>
-	
-	<filter>
-	    <filter-name>reauthFilter</filter-name>
-		<filter-class>com.google.glassware.ReauthFilter</filter-class>
-	</filter>
-	
-	<filter-mapping>
-	    <filter-name>reauthFilter</filter-name>
-	    <url-pattern>*</url-pattern>
-	</filter-mapping>
+
 </web-app>

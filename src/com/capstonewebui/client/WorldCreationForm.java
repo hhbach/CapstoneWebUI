@@ -218,7 +218,7 @@ public class WorldCreationForm extends AbsolutePanel {
 			
 			for(int i = 0; i < locationsArray.size(); i++)
 			{
-				locationsArray.get(i).setWorld(mWorld.getWorldName());
+				locationsArray.get(i).setWorld(nameTextBox.getText());
 				CapstoneWebUI.databaseService.storeLocation(locationsArray.get(i), 
 					new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
