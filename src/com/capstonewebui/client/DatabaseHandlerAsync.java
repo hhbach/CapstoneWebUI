@@ -8,6 +8,9 @@ public interface DatabaseHandlerAsync {
 	void greetServer(String input, AsyncCallback<String> callback)
 			throws IllegalArgumentException;
 	
+	void getLocations(AsyncCallback<String> callback)
+			throws IllegalArgumentException;
+	
 	void storeLocation(LocationObject object, AsyncCallback<String> callback) 
 			throws IllegalArgumentException;
 	
@@ -16,4 +19,5 @@ public interface DatabaseHandlerAsync {
 	
 	void getWorlds(AsyncCallback<String> callback)
 			throws IllegalArgumentException;
+
 }

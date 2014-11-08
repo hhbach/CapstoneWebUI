@@ -210,7 +210,7 @@ public class WorldCreationForm extends AbsolutePanel {
 		@Override
 		public void onClick(ClickEvent event) {
 			WorldObject mWorld = new WorldObject();
-			mWorld.setWorldDescription(nameTextBox.getText());
+			mWorld.setWorldName(nameTextBox.getText());
 			mWorld.setWorldDescription(descriptionTextBox.getText());
 			
 			System.out.println(locationsArray.size());

@@ -84,7 +84,7 @@ public class CapstoneWebUI implements EntryPoint {
 		
 		//locationCreationPanel.setVisible(true);
 		//worldBuilderPanel.setVisible(true);
-		//RootPanel.get("contentPanel").add(worldManagerPanel);
+		RootPanel.get("contentPanel").add(worldManagerPanel);
 	
 	}
 	

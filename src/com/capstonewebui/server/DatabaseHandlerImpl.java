@@ -31,7 +31,7 @@ DatabaseHandler {
 	
 	private Entity createWorldEntity(WorldObject world)
 	{
-		Entity w = new Entity("world", "tester");
+		Entity w = new Entity("world", world.getWorldName());
 		w.setProperty("Name", world.getWorldName());
 		w.setProperty("Description", world.getWorldDescription());
 		return w;
@@ -74,7 +74,7 @@ DatabaseHandler {
 
 	
 	@Override
-	public String getWorlds() throws IllegalArgumentException {
+	public String getLocations() throws IllegalArgumentException {
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
 		
@@ -88,6 +88,28 @@ DatabaseHandler {
 		
 		System.out.println("done");
 		return null;
+	}
+
+
+	@Override
+	public String getWorlds() throws IllegalArgumentException {
+		
+		String worlds = "";
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		
+		
+		PreparedQuery pq = dss.prepare(q);
+		
+		for (Entity result : pq.asIterable()) {
+			
+			String world = (String) result.getProperty("Name");
+			if(worlds.compareTo("") == 0)
+				worlds = world;
+			else
+				worlds = worlds + "," + world;
+		}
+		return worlds;
 	}
 
 

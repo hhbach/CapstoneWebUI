@@ -11,4 +11,5 @@ public interface DatabaseHandler extends RemoteService {
 	String storeLocation(LocationObject object) throws IllegalArgumentException;
 	String storeWorld(WorldObject world) throws IllegalArgumentException;
 	String getWorlds() throws IllegalArgumentException;
+	String getLocations() throws IllegalArgumentException;
 }

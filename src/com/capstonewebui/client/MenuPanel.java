@@ -99,11 +99,13 @@ public class MenuPanel extends AbsolutePanel{
 						System.out.println(caught);
 					}
 					public void onSuccess(String result) {
-						System.out.println("read");
+						System.out.println(result);
+						CapstoneWebUI.worldManagerPanel.addWorldsToList(result);
 					}
 					
 			});
-
+			CapstoneWebUI.menuPanel.setVisible(false);
+			CapstoneWebUI.worldManagerPanel.setVisible(true);
 		}
 
 	}

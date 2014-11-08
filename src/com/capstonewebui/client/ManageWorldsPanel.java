@@ -19,20 +19,24 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		mGrid.setStyleName("centered");
 		this.setSize("800px", "800px");
 		this.setVisible(false);
-		addFirstRowContent();
+		//addFirstRowContent();
 		addSecondRowContent();
 		
 		this.add(mGrid);
 		
 	}
 	
-	private void addFirstRowContent()
+	public void addWorldsToList(String worldString)
 	{
+		
+		String[] world = worldString.split(",");
 		worldsList = new ListBox();
+		
+		for(int i = 0; i < world.length; i++)
+		{
+			worldsList.addItem(world[i]);
+		}
 		worldsList.setVisibleItemCount(10);
-		worldsList.addItem("world 1");
-		worldsList.addItem("world 2");
-		worldsList.addItem("world 3");
 		
 		mGrid.setWidget(0, 0, worldsList);
 	}
