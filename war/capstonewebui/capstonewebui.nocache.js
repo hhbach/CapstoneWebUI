@@ -390,10 +390,10 @@ function capstonewebui(){
     var strongName;
     try {
       unflattenKeylistIntoAnswers(['ie10'], '1D36F2B8DC25A9708BE04270E6345ABD');
-      unflattenKeylistIntoAnswers(['ie8'], '425DC73A0D3AD25BAA34B70A00B3DBFD');
-      unflattenKeylistIntoAnswers(['gecko1_8'], '467F7C5FA4B6C192668B6E4E09294143');
-      unflattenKeylistIntoAnswers(['ie9'], '53E89AB2EB4635CBA70F043630892168');
-      unflattenKeylistIntoAnswers(['safari'], 'C2DCA3331AEF26E1106944F194845B0D');
+      unflattenKeylistIntoAnswers(['ie8'], '26F54C97AD8B029A231E3D98940AB2BA');
+      unflattenKeylistIntoAnswers(['safari'], '30B573D7884BDA5913EE7129D05436F5');
+      unflattenKeylistIntoAnswers(['gecko1_8'], 'AB65FB8A35DF9DC0888B871B686AFC21');
+      unflattenKeylistIntoAnswers(['ie9'], 'ABE6B4BEB19CA5E880B443076C5EADF1');
       strongName = answers[computePropValue('user.agent')];
       var idx = strongName.indexOf(':');
       if (idx != -1) {

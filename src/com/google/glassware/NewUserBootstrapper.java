@@ -25,6 +25,7 @@ import com.google.api.services.mirror.model.TimelineItem;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,11 +53,21 @@ public class NewUserBootstrapper {
     Contact starterProjectContact = new Contact();
     starterProjectContact.setId(MainServlet.CONTACT_ID);
     starterProjectContact.setDisplayName(MainServlet.CONTACT_NAME);
-    starterProjectContact.setImageUrls(Lists.newArrayList(WebUtil.buildUrl(req,
+    /*starterProjectContact.setImageUrls(Lists.newArrayList(WebUtil.buildUrl(req,
         "/static/images/chipotle-tube-640x360.jpg")));
     starterProjectContact.setAcceptCommands(Lists.newArrayList(
-        new Command().setType("TAKE_A_NOTE")));
+        new Command().setType("TAKE_A_NOTE")));*/
     Contact insertedContact = MirrorClient.insertContact(credential, starterProjectContact);
+    
+    ArrayList<String> list = new ArrayList<String>();
+    list.add(WebUtil.buildUrl(req,"/static/images/chipotle-tube-640x360.jpg"));
+    starterProjectContact.setImageUrls(list);
+    
+    ArrayList<Command> list2 = new ArrayList<Command>();
+    list2.add(new Command().setType("TAKE_A_NOTE"));
+    starterProjectContact.setAcceptCommands(list2);
+    
+    
     LOG.info("Bootstrapper inserted contact " + insertedContact.getId() + " for user " + userId);
 
     try {
