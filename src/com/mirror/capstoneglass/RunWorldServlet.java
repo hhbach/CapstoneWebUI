@@ -46,6 +46,9 @@ public class RunWorldServlet extends HttpServlet {
 						Timeline timeline = mirror.timeline();
 						
 						TimelineItem worldcard = createWorldCard(w);
+						worldcard.setBundleId(w.world_id);
+						worldcard.setIsBundleCover(true);
+						timeline.insert(worldcard).execute();
 						
 						
 						//initially unlocked locations.
@@ -55,6 +58,10 @@ public class RunWorldServlet extends HttpServlet {
 							locationcard.setBundleId(w.world_id);
 							timeline.insert(locationcard).execute();
 						}
+						
+						TimelineItem mapcard = createMapCard(w);
+						mapcard.setBundleId(w.world_id);
+						timeline.insert(mapcard).execute();
 						
 						
 					}
@@ -114,6 +121,29 @@ public class RunWorldServlet extends HttpServlet {
 		List<MenuItem> menuItemList = new ArrayList<MenuItem>();
 		menuItemList.add(new MenuItem().setAction("DELETE"));
 		
+		return timelineItem;
+	}
+	
+	public TimelineItem createMapCard(World w){
+		String html = "<article><figure><img src='glass://map?w=240&h=360&marker=0;";
+		
+		for (com.tour.capstoneglass.Location l : w.unlocked_locations)
+		{
+			html += String.valueOf(l.latitude) + "," + String.valueOf(l.longitude)+ "&marker=0;";
+		}
+		html += "33.419356,-111.917179'"; //current glass location
+		
+		html +=	"height='360' width='240'></figure><section><div class='text-auto-size'>" +
+				"<p>Multiple Markers</p></div></section></article>";
+		
+		
+		TimelineItem timelineItem = new TimelineItem()
+		.setHtml(html)
+		.setDisplayTime(new DateTime(new Date()))
+		.setNotification(new NotificationConfig().setLevel("Default"));
+
+		List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+		menuItemList.add(new MenuItem().setAction("DELETE"));
 		return timelineItem;
 	}
 	
