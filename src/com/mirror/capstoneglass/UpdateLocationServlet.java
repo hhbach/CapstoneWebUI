@@ -32,6 +32,7 @@ public class UpdateLocationServlet extends HttpServlet{
 		Entity w = new Entity("Location Update", email);
 		w.setProperty("Latitude", latitude);
 		w.setProperty("Longitude", longitude);
+		w.setProperty("LocTimestamp", time_now);
 		
 		dss.put(w);
 		
@@ -64,6 +65,7 @@ public class UpdateLocationServlet extends HttpServlet{
 		Entity w = new Entity("Location Update", email);
 		w.setProperty("Latitude", latitude);
 		w.setProperty("Longitude", longitude);
+		w.setProperty("Timestamp", time_now);
 		
 		dss.put(w);
 		

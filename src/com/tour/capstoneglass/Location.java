@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.tour.capstoneglass.Distance;
 
 
 public class Location {
@@ -246,5 +247,31 @@ public class Location {
 		
 		return str;
 	}
+	
+	//this function takes in lat/long from user and constructs a html string for a location card
+	public String toCard(double latitude, double longitude){
+		int dist = (int) Distance.getDistance(latitude,longitude,this.latitude,this.longitude);
+		String html = "<article><figure>" +
+				"<h1 class='text-auto-size'>" + name + "</h1><br/>" +
+				"<h2>Distance: " + String.valueOf(dist) + "KM</h2>" +
+				"</article></figure>";
+		
+		return html;
+	}
+	
+	//shows the unlocked card with a description 
+	public String toUnlockedCard(){
+		String html = "<article><figure>" +
+				"<h1 class='text-auto-size'>" + name + "</h1><br/>" +
+				"<p class='text-auto-size'>" + description + "</p>" +
+				"</article></figure>";
+		
+		return html;
+	}
+	
+	
+
+
+
 }
 

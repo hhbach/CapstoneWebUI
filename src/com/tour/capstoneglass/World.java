@@ -244,4 +244,13 @@ public class World
 		
 	}
 	
+	public String toCard(){
+		String html = "<article><figure>" +
+				"<h1 class='text-auto-size'>" + name + "</h1><br/>" +
+				"<p class='text-auto-size'>" + description + "</p>" +
+				"</article></figure>";
+		
+		return html;
+	}
+	
 }
