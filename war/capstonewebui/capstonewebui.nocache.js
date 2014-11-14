@@ -389,9 +389,9 @@ function capstonewebui(){
     }
     var strongName;
     try {
-      unflattenKeylistIntoAnswers(['ie8'], '425DC73A0D3AD25BAA34B70A00B3DBFD');
-      unflattenKeylistIntoAnswers(['gecko1_8'], 'AB65FB8A35DF9DC0888B871B686AFC21');
-      unflattenKeylistIntoAnswers(['ie9'], 'ABE6B4BEB19CA5E880B443076C5EADF1');
+      unflattenKeylistIntoAnswers(['gecko1_8'], '467F7C5FA4B6C192668B6E4E09294143');
+      unflattenKeylistIntoAnswers(['ie8'], '49CCE0BCE86E18B45700DB7557C66BBE');
+      unflattenKeylistIntoAnswers(['ie9'], '53E89AB2EB4635CBA70F043630892168');
       unflattenKeylistIntoAnswers(['safari'], 'CF90D4CE830C35FCDD11F55EBC23F399');
       unflattenKeylistIntoAnswers(['ie10'], 'D72FF47ACE0BB14C7EEB5E02F5CAEF44');
       strongName = answers[computePropValue('user.agent')];
