@@ -35,11 +35,29 @@ public class MenuPanel extends AbsolutePanel{
 		MyHandler handler = new MyHandler();
 		buildWorldButton.addClickHandler(handler);
 		manageWorldsButton.addClickHandler(new MenuManagerHandler());
+		tutorialButton.addClickHandler(new TutorialHandler());
 		
 		this.add(menuGrid);
 		this.setVisible(false);
 	}
 	
+	class TutorialHandler implements ClickHandler{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			CapstoneWebUI.databaseService.getWorld("JohnsWorld",
+					new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+					}
+					public void onSuccess(String result) {
+						System.out.println(result);
+					}
+					
+			});
+			
+		}
+		
+	}
 	
 	class MyHandler implements ClickHandler, KeyUpHandler {
 		/**

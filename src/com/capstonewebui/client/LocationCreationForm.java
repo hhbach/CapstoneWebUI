@@ -58,11 +58,8 @@ public class LocationCreationForm extends AbsolutePanel{
 		
 		setUpMapPanel();
 		
-		
-
-
-		
 	}
+	
 	public void buildMapUI()
 	{
 		 // Open a map centered on Cawker City, KS USA
@@ -81,13 +78,6 @@ public class LocationCreationForm extends AbsolutePanel{
 	    map.setSize("600px", "600px");
 	    // Add some controls for the zoom level
 	    map.addControl(new LargeMapControl());
-
-	    // Add a marker
-	    
-
-	    // Add an info window to highlight a point of interest
-	    //map.getInfoWindow().open(map.getCenter(),
-	        //new InfoWindowContent("World's Largest Ball of Sisal Twine"));
 
 	    mapControlPanel.add(closeButton);
 	    dock.addNorth(map, 600);
@@ -193,9 +183,13 @@ public class LocationCreationForm extends AbsolutePanel{
 		navigationButtonsContainer.setStyleName("navigationButtonsContainer");
 		this.add(navigationButtonsContainer);
 	}
-	public void submit()
+	
+	public void update(LocationObject location, ArrayList<LocationObject> allLocations)
 	{
-		
+		longitudeTB.setText(location.getLongitude());
+		latitudeTB.setText(location.getLatitude());
+		descriptionTB.setText(location.getLocationDescription());
+		nameTB.setText(location.getLocationName());
 	}
 	
 	class selectMapLocation implements MapClickHandler
@@ -287,8 +281,6 @@ public class LocationCreationForm extends AbsolutePanel{
 			location.setLatitude(latitudeTB.getText());
 			location.setLocked(lockedCB.getValue());
 			location.setLocked(visitedCB.getValue());
-			//location.locationToUnlock = null;
-			//location.locationToRetire = null;
 			
 			//saves the longitude and latitude back to world creation form
 			CapstoneWebUI.worldCreationForm.addLocation(location);

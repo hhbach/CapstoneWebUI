@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
@@ -31,6 +32,7 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		
 		String[] world = worldString.split(",");
 		worldsList = new ListBox();
+		worldsList.setSize("113px", "192px");
 		
 		for(int i = 0; i < world.length; i++)
 		{
@@ -76,8 +78,7 @@ public class ManageWorldsPanel extends AbsolutePanel{
 			}
 		}
 		private void deleteWorld() {
-			
-				mGrid.setText(1, 1, "You have deleted " + Integer.toString( + worldsList.getSelectedIndex()));
+				worldsList.removeItem(worldsList.getSelectedIndex());
 			}
 		}
 	
@@ -85,15 +86,31 @@ public class ManageWorldsPanel extends AbsolutePanel{
 
 		public void onClick(ClickEvent event) {
 
-			deleteWorld();
+			
+			if(worldsList.getSelectedIndex()  >= 0)
+			{
+				CapstoneWebUI.databaseService.getWorld(worldsList.getItemText(worldsList.getSelectedIndex()),
+						new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+						}
+						public void onSuccess(String result) {
+							CapstoneWebUI.worldCreationForm.loadLocations(result);
+							CapstoneWebUI.worldManagerPanel.setVisible(false);
+							CapstoneWebUI.worldCreationForm.setVisible(true);
+						}
+						
+				});
+			}
 		}
+		
 		public void onKeyUp(KeyUpEvent event) {
 			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 				
 			}
 		}
-		private void deleteWorld() {
-				mGrid.setText(1, 1, "You have edited " + Integer.toString( + worldsList.getSelectedIndex()));
+		
+		private void editWorld() {
+				System.out.println(worldsList.getValue(worldsList.getSelectedIndex()));
 			}
 
 		}

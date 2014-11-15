@@ -13,9 +13,12 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gwt.maps.client.impl.GeocoderImpl.LocationsCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 @SuppressWarnings("serial")
 public class DatabaseHandlerImpl extends RemoteServiceServlet implements
@@ -110,6 +113,40 @@ DatabaseHandler {
 				worlds = worlds + "," + world;
 		}
 		return worlds;
+	}
+
+
+	@Override
+	public String getWorld(String worldName) throws IllegalArgumentException {
+		
+		String locations = "";
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("World",FilterOperator.EQUAL, worldName);
+		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		for (Entity result : pq.asIterable()) {
+			
+			if(locations.compareTo("") == 0)
+				locations = (String)result.getProperty("Name");
+			else
+				locations = locations + "," + (String)result.getProperty("Name");
+		}
+		
+		return locations;
+	}
+
+
+	@Override
+	public String getLocation(String locationName) throws IllegalArgumentException {
+		String locations = "";
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, locationName);
+		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		
+		return pq.asSingleEntity().toString();
 	}
 
 

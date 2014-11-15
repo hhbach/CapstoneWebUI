@@ -82,8 +82,6 @@ public class WorldCreationForm extends AbsolutePanel {
 				CapstoneWebUI.worldCreationForm.setVisible(false);
 				CapstoneWebUI.locationCreationPanel.populateAvailableLocationLists(locationsArray);
 				CapstoneWebUI.locationCreationPanel.setVisible(true);
-				//map.removeFromParent();
-				//map = null;
 			}
 		});
 		
@@ -137,6 +135,11 @@ public class WorldCreationForm extends AbsolutePanel {
 		locationsArray = null;
 		nameTextBox.setText("");
 		descriptionTextBox.setText("");
+		
+		for(int i = 0; i < locationsFlexTable.getRowCount() -1; i++)
+		{
+			locationsFlexTable.removeRow(1);
+		}
 	}
 	
 	private void assembleFlexTable(){
@@ -159,10 +162,20 @@ public class WorldCreationForm extends AbsolutePanel {
 		deleteButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				removeLocation(location.getLongitude());
+				removeLocation(location.getLocationName());
 			}
 		});
 		
+		editButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				editLocation(location.getLocationName());
+				
+			}
+		});
+		
+
 		LatLng locationLatLng = LatLng.newInstance(Double.parseDouble(location.getLongitude()),Double.parseDouble(location.getLongitude()));
 		Marker newMarker = new Marker(locationLatLng);
 		
@@ -174,6 +187,7 @@ public class WorldCreationForm extends AbsolutePanel {
 		locationsFlexTable.setWidget(row, 2, editButton);
 		locationsFlexTable.setWidget(row, 3, deleteButton);
 		
+		
 	}
 	
 	private void removeLocation(String a)
@@ -181,7 +195,6 @@ public class WorldCreationForm extends AbsolutePanel {
 		
 		int rowNumber = -1;
 		
-		//looks for the row with the matching locationName;
 		
 		for(int i = 1; i < locationsFlexTable.getRowCount(); i++)
 		{
@@ -191,7 +204,33 @@ public class WorldCreationForm extends AbsolutePanel {
 			}
 		}
 		
-		locationsFlexTable.removeRow(rowNumber);
+		
+		if(rowNumber != -1 && rowNumber < locationsFlexTable.getRowCount())
+		{
+			locationsFlexTable.removeRow(rowNumber);
+			locationsArray.remove(rowNumber-1);
+		}
+	}
+	
+	
+	private void editLocation(String a)
+	{
+		int rowNumber = -1;
+		for(int i = 1; i < locationsFlexTable.getRowCount(); i++)
+		{
+			if(a.compareTo(locationsFlexTable.getText(i, 0)) == 0)
+			{
+				rowNumber = i;
+			}
+		}
+		
+		if(rowNumber != -1 && rowNumber < locationsFlexTable.getRowCount())
+		{
+			CapstoneWebUI.locationCreationPanel.update(locationsArray.get(rowNumber-1), locationsArray);
+			CapstoneWebUI.worldCreationForm.setVisible(false);
+			CapstoneWebUI.locationCreationPanel.setVisible(true);
+		}
+		
 	}
 	
 	private MapWidget buildMap() {
@@ -257,5 +296,41 @@ public class WorldCreationForm extends AbsolutePanel {
 		
 	}
 	
-
+	public void loadWorldInformation()
+	{
+		
+	}
+	
+	
+	//The input is a list of locations such that it is seperated by ','.
+	//example: "house,work,gym"
+	public void loadLocations(String locations) 
+	{
+		clearPanel();
+		locationsArray = new ArrayList<LocationObject>();
+		String[] locationsNameArray = locations.split(",");
+		
+		for(byte i = 0; i <locationsNameArray.length; i++)
+		{
+			final String location = locationsNameArray[i];
+			CapstoneWebUI.databaseService.getLocation(locationsNameArray[i],new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+					System.out.println(caught);
+				}
+				public void onSuccess(String result) {
+					final LocationObject newLocation = new LocationObject();
+					newLocation.setLocationName(location);
+					String[] resultValues = result.split("\n");
+					String[] longitude = resultValues[6].split(" = ");
+					String[] latitude = resultValues[5].split(" = ");
+					newLocation.setLatitude(latitude[1].toString());
+					newLocation.setLongitude(longitude[1].toString());
+					addLocation(newLocation);
+					locationsArray.add(newLocation);
+				}
+			});
+			//System.out.println(newLocation.getLatitude());
+			
+		}
+	}
 }
