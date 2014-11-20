@@ -80,14 +80,15 @@ public class WorldCreationForm extends AbsolutePanel {
 			public void onClick(ClickEvent event) {
 				
 				CapstoneWebUI.worldCreationForm.setVisible(false);
-				CapstoneWebUI.locationCreationPanel.populateAvailableLocationLists(locationsArray);
 				CapstoneWebUI.locationCreationPanel.setVisible(true);
+				CapstoneWebUI.locationCreationPanel.generateNewLocation(locationsArray);
 			}
 		});
 		
 		
 
 	}
+	//
 	
 	
 	private HorizontalPanel assemblePanels(){
@@ -132,70 +133,115 @@ public class WorldCreationForm extends AbsolutePanel {
 	
 	private void clearPanel()
 	{
-		locationsArray = null;
+		locationsArray = new ArrayList<LocationObject>();
 		nameTextBox.setText("");
 		descriptionTextBox.setText("");
 		
-		for(int i = 0; i < locationsFlexTable.getRowCount() -1; i++)
+		for(int i = 1; i <= locationsFlexTable.getRowCount()-1; i++)
 		{
-			locationsFlexTable.removeRow(1);
+			locationsFlexTable.removeRow(i);
 		}
 	}
 	
 	private void assembleFlexTable(){
 		locationsFlexTable.setText(0, 0, "#");
-		locationsFlexTable.setText(0, 1, "Location");
-		locationsFlexTable.setText(0, 2, "Options");
-		locationsFlexTable.setText(0, 3, "");
+		//locationsFlexTable.setText(0, 1, "Location");
+		locationsFlexTable.setText(0, 2, "Unlocks");
+		locationsFlexTable.setText(0, 3, "Retireds");
+		locationsFlexTable.setText(0, 4, "");
+		locationsFlexTable.setText(0, 5, "");
+	}
+	
+	private boolean addLocationToArray(LocationObject location) //verify that the new location is unique before adding it
+	{
+		boolean found = false;
+		
+		for(int i = 0; i < locationsArray.size(); i++)
+		{
+			if(locationsArray.get(i).getLocationName().compareTo(location.getLocationName()) == 0)
+			{
+				locationsArray.set(i, location);
+				found = true;
+			}
+		}
+		if(!found)
+			locationsArray.add(location);
+		return found;
+			
+	}
+	
+	private void updateLocationInFlexTable(LocationObject location) //update a longittude/latitude in flex table
+	{
+		byte locationsCount = (byte) locationsFlexTable.getRowCount();
+		for(int i = 0; i < locationsCount; i++)
+		{
+			if(locationsFlexTable.getText(i, i).compareTo(location.getLocationName()) == 0)
+			{
+				locationsFlexTable.setText(i, 1, location.getLongitude() + "," + location.getLatitude());		
+			}
+		}
+		
 	}
 	
 	public void addLocation(final LocationObject location)
 	{
-		locationsArray.add(location);
-		final int row = locationsFlexTable.getRowCount();
-		locationsFlexTable.setText(row, 0, location.getLocationName());
-		locationsFlexTable.setText(row, 1, location.getLongitude() + "," + location.getLatitude());
-		locationsFlexTable.setText(row, 2, "Edit/Delete");
-		Button deleteButton = new Button("Delete");
-		Button editButton = new Button("Edit");
 		
-		deleteButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				removeLocation(location.getLocationName());
-			}
-		});
+		if(addLocationToArray(location)) // if location is already found in the array
+		{
+			updateLocationInFlexTable(location);
+		}
+		else
+		{
+			int row = locationsFlexTable.getRowCount();
+			locationsFlexTable.setText(row, 0, location.getLocationName());
+			//locationsFlexTable.setText(row, 1, location.getLongitude() + "," + location.getLatitude());
+			locationsFlexTable.setText(row, 2, location.getLocationToUnlock());
+			locationsFlexTable.setText(row, 3, location.getLocationToRetire());
+			//locationsFlexTable.setText(row, 2, "Edit/Delete");
+			Button deleteButton = new Button("Delete");
+			Button editButton = new Button("Edit");
 		
-		editButton.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				editLocation(location.getLocationName());
-				
-			}
-		});
 		
+			deleteButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					CapstoneWebUI.databaseService.deleteLocation(location.getLocationName(),
+							new AsyncCallback<String>() {
+							public void onFailure(Throwable caught) {
+							}
+							public void onSuccess(String result) {
+								removeLocation(location.getLocationName());
+							}
+							
+					});
+				}
+			});
+			
+			editButton.addClickHandler(new ClickHandler(){
+	
+				@Override
+				public void onClick(ClickEvent event) {
+					editLocation(location.getLocationName());
+					
+					
+				}
+			});
+			locationsFlexTable.setWidget(row, 4, editButton);
+			locationsFlexTable.setWidget(row, 5, deleteButton);
+		
+		}
 
 		LatLng locationLatLng = LatLng.newInstance(Double.parseDouble(location.getLongitude()),Double.parseDouble(location.getLongitude()));
 		Marker newMarker = new Marker(locationLatLng);
 		
 		map.addOverlay(newMarker);
-		
-		//caption
     	map.getInfoWindow().open(locationLatLng,
     			new InfoWindowContent(location.getLocationName()));
-		locationsFlexTable.setWidget(row, 2, editButton);
-		locationsFlexTable.setWidget(row, 3, deleteButton);
-		
-		
 	}
 	
 	private void removeLocation(String a)
 	{
-		
 		int rowNumber = -1;
-		
-		
 		for(int i = 1; i < locationsFlexTable.getRowCount(); i++)
 		{
 			if(a.compareTo(locationsFlexTable.getText(i, 0)) == 0)
@@ -203,13 +249,11 @@ public class WorldCreationForm extends AbsolutePanel {
 				rowNumber = i;
 			}
 		}
-		
-		
 		if(rowNumber != -1 && rowNumber < locationsFlexTable.getRowCount())
 		{
 			locationsFlexTable.removeRow(rowNumber);
 			locationsArray.remove(rowNumber-1);
-		}
+		}	
 	}
 	
 	
@@ -224,7 +268,7 @@ public class WorldCreationForm extends AbsolutePanel {
 			}
 		}
 		
-		if(rowNumber != -1 && rowNumber < locationsFlexTable.getRowCount())
+		if(rowNumber != 0 && rowNumber < locationsFlexTable.getRowCount())
 		{
 			CapstoneWebUI.locationCreationPanel.update(locationsArray.get(rowNumber-1), locationsArray);
 			CapstoneWebUI.worldCreationForm.setVisible(false);
@@ -232,6 +276,7 @@ public class WorldCreationForm extends AbsolutePanel {
 		}
 		
 	}
+	
 	
 	private MapWidget buildMap() {
 	    // Open a map centered on Cawker City, KS USA
@@ -252,7 +297,7 @@ public class WorldCreationForm extends AbsolutePanel {
 			mWorld.setWorldName(nameTextBox.getText());
 			mWorld.setWorldDescription(descriptionTextBox.getText());
 			
-			System.out.println(locationsArray.size());
+			System.out.println("Locations Queued to be saved:" + locationsArray.size());
 
 			
 			for(int i = 0; i < locationsArray.size(); i++)
@@ -275,7 +320,9 @@ public class WorldCreationForm extends AbsolutePanel {
 					System.out.println(caught);
 				}
 				public void onSuccess(String result) {
-					System.out.println("saved!");
+					CapstoneWebUI.worldCreationForm.setVisible(false);
+					CapstoneWebUI.menuPanel.setVisible(true);
+					clearPanel();
 				}
 			});
 
@@ -296,17 +343,46 @@ public class WorldCreationForm extends AbsolutePanel {
 		
 	}
 	
-	public void loadWorldInformation()
+	//takes a string that has the world name and world description as an input. The world name and world input are comma seperated;
+	//Example: "worldName, world descrption"
+	public void loadWorldInformation(String worldInfo)
 	{
+		clearPanel();
+		String[] worldInfoString = worldInfo.split(",");
+		
+		nameTextBox.setText(worldInfoString[0]);
+		descriptionTextBox.setText(worldInfoString[1]);
 		
 	}
 	
 	
+	public void generateNewWorld()
+	{
+		clearPanel();
+		debugPrintLocationsArray();
+		//locationsArray.clear();
+	}
+	
+	private void debugPrintLocationsArray()
+	{
+		if(locationsArray != null)
+		{
+			byte numLocs = (byte)locationsArray.size();
+			System.out.println(numLocs);
+			for(byte i = 0; i < numLocs; i++)
+			{
+				System.out.println(locationsArray.get(i));
+			}
+		}
+		else
+			System.out.println("locations array is null");
+	}
+
+	//load the locations for a world
 	//The input is a list of locations such that it is seperated by ','.
 	//example: "house,work,gym"
 	public void loadLocations(String locations) 
 	{
-		clearPanel();
 		locationsArray = new ArrayList<LocationObject>();
 		String[] locationsNameArray = locations.split(",");
 		
@@ -318,19 +394,24 @@ public class WorldCreationForm extends AbsolutePanel {
 					System.out.println(caught);
 				}
 				public void onSuccess(String result) {
+					System.out.println(result);
 					final LocationObject newLocation = new LocationObject();
 					newLocation.setLocationName(location);
 					String[] resultValues = result.split("\n");
 					String[] longitude = resultValues[6].split(" = ");
 					String[] latitude = resultValues[5].split(" = ");
+					String[] unlocks = resultValues[3].split(" = ");
+					String[] retires = resultValues[10].split(" = ");
+					String[] descriptionString= resultValues[2].split(" = ");
+					
+					newLocation.setLocationDescription(descriptionString[1].replace(" ", ""));
 					newLocation.setLatitude(latitude[1].toString());
 					newLocation.setLongitude(longitude[1].toString());
+					newLocation.setLocationToUnlock(unlocks[1].replace(" ", ""));
+					newLocation.setLocationToRetire(retires[1].replace(" ", ""));
 					addLocation(newLocation);
-					locationsArray.add(newLocation);
 				}
 			});
-			//System.out.println(newLocation.getLatitude());
-			
 		}
 	}
 }

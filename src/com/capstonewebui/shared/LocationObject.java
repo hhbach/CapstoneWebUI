@@ -13,8 +13,8 @@ public class LocationObject implements Serializable{
 	private String world;
 	private boolean  visited;
 	private boolean locked;
-	private String[] locationToUnlock;
-	private String[] locationToRetire;
+	private String locationToUnlock;
+	private String locationToRetire;
 	
 	public String getLocationId() {
 		return locationId;
@@ -70,16 +70,16 @@ public class LocationObject implements Serializable{
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
-	public String[] getLocationToUnlock() {
+	public String getLocationToUnlock() {
 		return locationToUnlock;
 	}
-	public void setLocationToUnlock(String[] locationToUnlock) {
+	public void setLocationToUnlock(String locationToUnlock) {
 		this.locationToUnlock = locationToUnlock;
 	}
-	public String[] getLocationToRetire() {
+	public String getLocationToRetire() {
 		return locationToRetire;
 	}
-	public void setLocationToRetire(String[] locationToRetire) {
+	public void setLocationToRetire(String locationToRetire) {
 		this.locationToRetire = locationToRetire;
 	}
 }

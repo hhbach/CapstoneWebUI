@@ -25,5 +25,13 @@ public interface DatabaseHandlerAsync {
 	
 	void getWorld(String worldName, AsyncCallback<String> callback)
 			throws IllegalArgumentException;
-
+			
+	void getWorldInfo(String worldName, AsyncCallback<String> callback)
+			throws IllegalArgumentException;
+	
+	void deleteLocation(String locationName, AsyncCallback<String> callback)
+			throws IllegalArgumentException;
+	
+	void deleteWorld(String worldName, AsyncCallback<String> callback)
+			throws IllegalArgumentException;
 }

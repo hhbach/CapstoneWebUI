@@ -20,7 +20,6 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		mGrid.setStyleName("centered");
 		this.setSize("800px", "800px");
 		this.setVisible(false);
-		//addFirstRowContent();
 		addSecondRowContent();
 		
 		this.add(mGrid);
@@ -29,18 +28,25 @@ public class ManageWorldsPanel extends AbsolutePanel{
 	
 	public void addWorldsToList(String worldString)
 	{
-		
-		String[] world = worldString.split(",");
-		worldsList = new ListBox();
-		worldsList.setSize("113px", "192px");
-		
-		for(int i = 0; i < world.length; i++)
+		if(worldString.compareTo("") != 0) //compare 
 		{
-			worldsList.addItem(world[i]);
+			String[] world = worldString.split(",");
+			worldsList = new ListBox();
+			worldsList.setSize("113px", "192px");
+			
+			for(int i = 0; i < world.length; i++)
+			{
+				worldsList.addItem(world[i]);
+			}
+			worldsList.setVisibleItemCount(10);
+			
+			mGrid.setWidget(0, 0, worldsList);
 		}
-		worldsList.setVisibleItemCount(10);
-		
-		mGrid.setWidget(0, 0, worldsList);
+	}
+	
+	private void clearWorldList()
+	{
+		worldsList.clear();
 	}
 	
 	private void addSecondRowContent()
@@ -70,7 +76,19 @@ public class ManageWorldsPanel extends AbsolutePanel{
 
 		public void onClick(ClickEvent event) {
 
-			deleteWorld();
+			{
+				CapstoneWebUI.databaseService.deleteWorld(worldsList.getItemText(worldsList.getSelectedIndex()),
+						new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+							System.out.println(caught);
+						}
+						public void onSuccess(String result) {
+							deleteWorld();
+						}	
+				});
+			}
+			
+			
 		}
 		public void onKeyUp(KeyUpEvent event) {
 			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
@@ -89,6 +107,20 @@ public class ManageWorldsPanel extends AbsolutePanel{
 			
 			if(worldsList.getSelectedIndex()  >= 0)
 			{
+				
+				{
+					CapstoneWebUI.databaseService.getWorldInfo(worldsList.getItemText(worldsList.getSelectedIndex()),
+							new AsyncCallback<String>() {
+							public void onFailure(Throwable caught) {
+								System.out.println(caught);
+							}
+							public void onSuccess(String result) {
+								CapstoneWebUI.worldCreationForm.loadWorldInformation(result);
+							}
+							
+					});
+				}				
+				
 				CapstoneWebUI.databaseService.getWorld(worldsList.getItemText(worldsList.getSelectedIndex()),
 						new AsyncCallback<String>() {
 						public void onFailure(Throwable caught) {
@@ -114,6 +146,7 @@ public class ManageWorldsPanel extends AbsolutePanel{
 			}
 
 		}
+	
 	
 
 

@@ -69,25 +69,6 @@ public class LoginPanel extends AbsolutePanel {
 			// First, we validate the input.
 			CapstoneWebUI.logInPanel.setVisible(false);
 			CapstoneWebUI.menuPanel.setVisible(true);
-			
-			/*CapstoneWebUI.databaseService.storeData("sup albert", new AsyncCallback<String>() {
-							public void onFailure(Throwable caught) {
-								userNameTextBox.setText("error");
-							}
-
-							public void onSuccess(String result) {
-							userNameTextBox.setText(result);
-							}
-						});
-			
-			/*
-			/*
-			errorLabel.setText("");
-			String textToServer = nameField.getText();
-			if (!FieldVerifier.isValidName(textToServer)) {
-				errorLabel.setText("Please enter at least four characters");
-				return;
-				*/
 			}
 
 		}

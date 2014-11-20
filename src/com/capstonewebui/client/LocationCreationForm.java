@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -35,18 +36,17 @@ public class LocationCreationForm extends AbsolutePanel{
 	private TextBox latitudeTB;
 	private TextBox descriptionTB;
 	private TextBox nameTB;
-	private Grid worldBuilderGrid;
+	private FlexTable worldBuilderGrid;
 	private CheckBox lockedCB;
-	private CheckBox visitedCB;
 	private PopupPanel mapPanel;
-	private ListBox locationsToUnlock;
 	private ListBox locationsToRetire;
+	private FlexTable locationsToUnlock;
 	
 	public LocationCreationForm() {
 		this.setVisible(false);
 		this.setSize("800px", "800px");
 		
-		worldBuilderGrid = new Grid(10,3);
+		worldBuilderGrid = new FlexTable();
 		worldBuilderGrid.setStyleName("centered");
 
 		addLabelToPanel();
@@ -55,26 +55,23 @@ public class LocationCreationForm extends AbsolutePanel{
 		addNavigationButtons();
 		
 		this.add(worldBuilderGrid);
-		
+		addAvailableLocationsHeader();
 		setUpMapPanel();
 		
 	}
 	
 	public void buildMapUI()
 	{
-		 // Open a map centered on Cawker City, KS USA
-	    LatLng cawkerCity = LatLng.newInstance(39.509, -98.434);
 	    
 	    Button closeButton = new Button("Close");
 	    closeButton.addClickHandler(new CloseButtonHandler());
 	    
-	    map = new MapWidget(cawkerCity, 2);
 	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	    HorizontalPanel mapControlPanel = new HorizontalPanel();
 	    
 	    mapControlPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    
-	    
+	    LatLng cawkerCity = LatLng.newInstance(39.509, -98.434);
+	    map = new MapWidget(cawkerCity, 2);
 	    map.setSize("600px", "600px");
 	    // Add some controls for the zoom level
 	    map.addControl(new LargeMapControl());
@@ -105,10 +102,9 @@ public class LocationCreationForm extends AbsolutePanel{
 		worldBuilderGrid.setText(3, 0, "Longitude: ");
 		worldBuilderGrid.setText(4, 0, "Latitude: ");
 		worldBuilderGrid.setText(5, 0, "Discovery Radius: ");
-		worldBuilderGrid.setText(6, 0, "Visited: ");
-		worldBuilderGrid.setText(7, 0, "Locked: ");
-		worldBuilderGrid.setText(8, 0, "Locations To Unlock: ");
-		worldBuilderGrid.setText(9, 0, "Locations To Retire: ");
+		worldBuilderGrid.setText(6, 0, "Locked: ");
+		worldBuilderGrid.setText(7, 0, "");
+		worldBuilderGrid.setText(8, 0, "Dependencies: ");
 	}
 	
 	
@@ -127,43 +123,59 @@ public class LocationCreationForm extends AbsolutePanel{
 		descriptionTB = new TextBox();
 		worldBuilderGrid.setWidget(2, 1, descriptionTB);
 		
+		
 		longitudeTB = new TextBox();
-		worldBuilderGrid.setWidget(3, 1, longitudeTB);
+		
+		AbsolutePanel longitudeContainer = new AbsolutePanel();
+		Button map2Button = new Button("->");
+		longitudeContainer.add(longitudeTB);
+		longitudeContainer.add(map2Button);
+		worldBuilderGrid.setWidget(3, 1, longitudeContainer);
+		map2Button.addClickHandler(new MapLauncherHandler());
+		
 		
 		latitudeTB = new TextBox();
 		worldBuilderGrid.setWidget(4, 1, latitudeTB);
 		
 		TextBox discoveryRadiusTB = new TextBox();
+		discoveryRadiusTB.setText("meters");
 		worldBuilderGrid.setWidget(5, 1, discoveryRadiusTB);
 
 		
-		visitedCB = new CheckBox();
-		worldBuilderGrid.setWidget(6, 1, visitedCB);
 		
 		lockedCB = new CheckBox();
-		worldBuilderGrid.setWidget(7, 1, lockedCB);
+		worldBuilderGrid.setWidget(6, 1, lockedCB);
 		
-		locationsToUnlock = new ListBox();
-		worldBuilderGrid.setWidget(8, 1, locationsToUnlock);
+	}
+	
+	//this consists "id", "longitude/latitude", and "edit/add" buttons
+	private void addAvailableLocationsHeader()
+	{
+		locationsToUnlock = new FlexTable();
+		worldBuilderGrid.getFlexCellFormatter().setColSpan(9, 0, 2);
+		worldBuilderGrid.setWidget(9,0, locationsToUnlock);
 		
-		locationsToRetire = new ListBox();
-		worldBuilderGrid.setWidget(9, 1, locationsToRetire);
+		locationsToUnlock.getColumnFormatter().setWidth(0, "26px");
+		locationsToUnlock.getColumnFormatter().setWidth(1, "125px");
+		locationsToUnlock.getColumnFormatter().setWidth(2, "81px");
+		locationsToUnlock.getRowFormatter().addStyleName(0, "locationListHeader");
+		locationsToUnlock.setText(0, 0, "Locations");
+		locationsToUnlock.setText(0, 1, "Unlock");
+		locationsToUnlock.setText(0, 2, "Retire");
 	}
 	
 	//third column houses optional option for each field.
 	private void addThirdColumn()
 	{	
 		Button map2Button = new Button("->");
-		worldBuilderGrid.setWidget(4, 2, map2Button);
-		worldBuilderGrid.setText(5, 2, " meters");
-		map2Button.addClickHandler(new MapLauncherHandler());
 	}
 	
 	private void clearPanel()
 	{
+		nameTB.setText("");
+		descriptionTB.setText("");
 		longitudeTB.setText("");
 		latitudeTB.setText("");
-		
 	}
 	
 	private void addNavigationButtons()
@@ -186,10 +198,13 @@ public class LocationCreationForm extends AbsolutePanel{
 	
 	public void update(LocationObject location, ArrayList<LocationObject> allLocations)
 	{
+		clearFields();
 		longitudeTB.setText(location.getLongitude());
 		latitudeTB.setText(location.getLatitude());
 		descriptionTB.setText(location.getLocationDescription());
 		nameTB.setText(location.getLocationName());
+		
+		updateAvailableLocations(allLocations);
 	}
 	
 	class selectMapLocation implements MapClickHandler
@@ -197,7 +212,6 @@ public class LocationCreationForm extends AbsolutePanel{
 
 		@Override
 		public void onClick(MapClickEvent event) {
-			//longitudeTB.setText((event.getLatLng().toString()));
 			map.clearOverlays();
 			LatLng selectedPoint = event.getLatLng();
 			map.addOverlay(new Marker(selectedPoint));
@@ -220,6 +234,51 @@ public class LocationCreationForm extends AbsolutePanel{
 		
 	}
 	
+	private void buildDepedency(LocationObject location)
+	{
+		String locationsToRetireString = "{";
+		String locationsToUnlockString = "{";
+		String locationName = "";
+		byte rowCount = (byte) locationsToUnlock.getRowCount();
+		for(int i = 1; i < rowCount; i++)
+		{
+			
+			
+			System.out.println("collumn " + i + "has: " + locationsToUnlock.getCellCount(i));
+			
+			CheckBox cb = (CheckBox) locationsToUnlock.getWidget(i, 1);
+			if(cb.getValue() == true)
+			{
+				if(locationsToUnlockString.compareTo("{") == 0)
+					locationsToUnlockString = locationsToUnlockString + locationsToUnlock.getText(i, 0);
+				else
+					locationsToUnlockString = locationsToUnlockString + "," + locationsToUnlock.getText(i, 0);
+
+			}
+			
+			
+			cb = (CheckBox) locationsToUnlock.getWidget(i, 2);
+			if(cb.getValue() == true)
+			{
+				
+				if(locationsToUnlockString.compareTo("{") == 0)
+					locationsToRetireString = locationsToRetireString + locationsToUnlock.getText(i, 0);
+				else
+					locationsToRetireString = locationsToRetireString + "," + locationsToUnlock.getText(i, 0);
+			}
+			
+			if(i == rowCount - 1)
+			{
+				locationsToUnlockString = locationsToUnlockString + "}";
+				locationsToRetireString = locationsToRetireString + "}";
+			}
+			location.setLocationToUnlock(locationsToUnlockString);
+			location.setLocationToRetire(locationsToRetireString);
+		}
+	}
+	
+	
+	
 	private void clearFields()
 	{
 		nameTB.setText("");
@@ -227,23 +286,39 @@ public class LocationCreationForm extends AbsolutePanel{
 		descriptionTB.setText("");
 		nameTB.setText("");
 		lockedCB.setValue(false);
-		visitedCB.setValue(false);
-		locationsToRetire.clear();
-		locationsToUnlock.clear();
-	}
-	
-	public void populateAvailableLocationLists(ArrayList<LocationObject> locations)
-	{
-		clearFields();
 		
-		int locationSize = locations.size();
-		for(int i = 0; i < locationSize; i++ )
+		for(int i = 1; i < locationsToUnlock.getRowCount(); i++)
 		{
-			locationsToUnlock.addItem(locations.get(i).getLocationName());
-			locationsToRetire.addItem(locations.get(i).getLocationName());
+			locationsToUnlock.removeAllRows();
+			addAvailableLocationsHeader();
 		}
 	}
 	
+	private void updateAvailableLocations(ArrayList<LocationObject> locations)
+	{
+		int locationSize = locations.size();
+		byte vacantRow = 1;
+		for(int i = 1; i <= locationSize; i++ )
+		{
+			
+			if(locations.get(i-1).getLocationName().compareTo(nameTB.getText()) != 0)
+			{
+				locationsToUnlock.setText(vacantRow,0,locations.get(i-1).getLocationName());
+				CheckBox unlock = new CheckBox();
+				CheckBox retire = new CheckBox();
+				locationsToUnlock.setWidget(vacantRow, 1, unlock);
+				locationsToUnlock.setWidget(vacantRow, 2, retire);
+				vacantRow = (byte) (vacantRow + 1);
+			}
+		}
+	}
+
+	public void generateNewLocation(ArrayList<LocationObject> locations)
+	{
+		clearPanel();
+		updateAvailableLocations(locations);
+	}
+
 	
 	class MapLauncherHandler implements ClickHandler
 	{
@@ -261,7 +336,6 @@ public class LocationCreationForm extends AbsolutePanel{
 		@Override
 		public void onClick(ClickEvent event) {
 			mapPanel.hide();
-			
 		}
 	}	
 	
@@ -274,18 +348,15 @@ public class LocationCreationForm extends AbsolutePanel{
 			CapstoneWebUI.worldCreationForm.setVisible(true);
 			
 			LocationObject location = new LocationObject();
-			//location.locationName = null;
 			location.setLocationName(nameTB.getText());
 			location.setLocationDescription(descriptionTB.getText());
 			location.setLongitude(longitudeTB.getText());
 			location.setLatitude(latitudeTB.getText());
 			location.setLocked(lockedCB.getValue());
-			location.setLocked(visitedCB.getValue());
-			
-			//saves the longitude and latitude back to world creation form
+			buildDepedency(location);
+
 			CapstoneWebUI.worldCreationForm.addLocation(location);
 		}
-		
 	}
 	
 	class CancelLocationHandler implements ClickHandler

@@ -148,7 +148,73 @@ DatabaseHandler {
 		
 		return pq.asSingleEntity().toString();
 	}
+	
+	@Override
+	public String getWorldInfo(String worldName) throws IllegalArgumentException{ //returns the name and the descriptions
+		
+		String worldInfo = "";
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, worldName);
+		Query q = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		
+		for (Entity result : pq.asIterable()) {
+			worldInfo = (String)result.getProperty("Name") + "," +  (String)result.getProperty("Description");
+			
+		}
 
 
+		return worldInfo;
+	}
 
+
+	@Override
+	public String deleteLocation(String locationName) //given a locationName, this function will query the database and delete the selected item
+			throws IllegalArgumentException {
+		
+		String worldInfo = "";
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, locationName);
+		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		
+		for (Entity result : pq.asIterable()) {
+			//result.getKey();
+			dss.delete(result.getKey());	
+		}
+		
+		
+		return null;
+	}
+
+
+	@Override
+	public String deleteWorld(String worldName)
+			throws IllegalArgumentException {
+		
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("World",FilterOperator.EQUAL, worldName);
+		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		for (Entity result : pq.asIterable()) {
+			dss.delete(result.getKey());	
+		}
+		
+		
+		
+		Filter nameFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, worldName);
+		Query worldQuery = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		q.setFilter(nameFilter);
+		PreparedQuery preparedWorldQuery = dss.prepare(worldQuery);
+		
+		for (Entity result : preparedWorldQuery.asIterable()) {
+			//result.getKey();
+			dss.delete(result.getKey());	
+		}
+		
+		return "world deleted";
+	}
 }

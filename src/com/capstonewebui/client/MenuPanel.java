@@ -32,7 +32,7 @@ public class MenuPanel extends AbsolutePanel{
 		menuGrid.setWidget(2, 0, interactButton);
 		menuGrid.setWidget(3,0, tutorialButton);
 		
-		MyHandler handler = new MyHandler();
+		NewWorldListener handler = new NewWorldListener();
 		buildWorldButton.addClickHandler(handler);
 		manageWorldsButton.addClickHandler(new MenuManagerHandler());
 		tutorialButton.addClickHandler(new TutorialHandler());
@@ -45,7 +45,7 @@ public class MenuPanel extends AbsolutePanel{
 
 		@Override
 		public void onClick(ClickEvent event) {
-			CapstoneWebUI.databaseService.getWorld("JohnsWorld",
+			CapstoneWebUI.databaseService.deleteWorld("ASU tour",
 					new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
 					}
@@ -59,30 +59,25 @@ public class MenuPanel extends AbsolutePanel{
 		
 	}
 	
-	class MyHandler implements ClickHandler, KeyUpHandler {
+	class NewWorldListener implements ClickHandler{
 		/**
 		 * Fired when the user clicks on the sendButton.
 		 */
 		public void onClick(ClickEvent event) {
 			//sendNameToServer();
-			sendNameToServer();
+			generateNewWorld();
 		}
 
 		/**
 		 * Fired when the user types in the nameField.
 		 */
-		public void onKeyUp(KeyUpEvent event) {
-			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-				//sendNameToServer();
-			}
-		}
 
 		
 		
-		private void sendNameToServer() {
+		private void generateNewWorld() {
 			CapstoneWebUI.menuPanel.setVisible(false);
 			CapstoneWebUI.worldCreationForm.setVisible(true);
-			
+			CapstoneWebUI.worldCreationForm.generateNewWorld();
 			}
 
 		}

@@ -1,8 +1,8 @@
-<!-- Indices written at Sat, 15 Nov 2014 12:50:12 MST -->
+<!-- Indices written at Thu, 20 Nov 2014 15:53:28 MST -->
 
 <datastore-indexes>
 
-    <!-- Used 3 times in query history -->
+    <!-- Used 18 times in query history -->
     <datastore-index kind="location" ancestor="false" source="auto">
         <property name="World" direction="asc"/>
         <property name="Name" direction="asc"/>
