@@ -1,5 +1,6 @@
 package com.capstonewebui.client;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -28,14 +30,24 @@ public class LoginPanel extends AbsolutePanel {
 		grid.setWidget(0, 1, userNameTextBox);
 		grid.setWidget(1, 1, passwordTextBox);
 		grid.setWidget(1, 0, new Label("password"));
-		this.setSize("800px", "800px");
 		
+		
+		AbsolutePanel buttonContainer = new AbsolutePanel();
 		Button logInButton = new Button("Log In");
 		Button forgotPasswordButton = new Button("Forgot Password");
-		grid.setWidget(2, 0, forgotPasswordButton);
-		grid.setWidget(2, 1, logInButton);
+		
+		buttonContainer.setWidth("200px");
+		buttonContainer.add(logInButton);
+		buttonContainer.add(forgotPasswordButton);
+		//grid.setWidget(2, 0, forgotPasswordButton);
+		grid.setWidget(2, 1, buttonContainer);
 		grid.setStyleName("centered");
-		grid.addStyleName("bordered");
+		
+		
+		//inscript styling
+		this.setSize("800px", "800px");
+		passwordTextBox.setWidth("200px");
+		userNameTextBox.setWidth("200px");
 		
 		this.add(grid);
 		

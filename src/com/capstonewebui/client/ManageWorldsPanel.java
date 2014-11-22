@@ -20,7 +20,12 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		mGrid.setStyleName("centered");
 		this.setSize("800px", "800px");
 		this.setVisible(false);
-		addSecondRowContent();
+		
+		worldsList = new ListBox();
+		worldsList.setSize("300px", "192px");
+		mGrid.setWidget(0, 0, worldsList);
+		
+		addControls();
 		
 		this.add(mGrid);
 		
@@ -28,19 +33,15 @@ public class ManageWorldsPanel extends AbsolutePanel{
 	
 	public void addWorldsToList(String worldString)
 	{
+		worldsList.clear();
 		if(worldString.compareTo("") != 0) //compare 
 		{
 			String[] world = worldString.split(",");
-			worldsList = new ListBox();
-			worldsList.setSize("113px", "192px");
-			
 			for(int i = 0; i < world.length; i++)
 			{
 				worldsList.addItem(world[i]);
 			}
 			worldsList.setVisibleItemCount(10);
-			
-			mGrid.setWidget(0, 0, worldsList);
 		}
 	}
 	
@@ -49,15 +50,25 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		worldsList.clear();
 	}
 	
-	private void addSecondRowContent()
+	private void addControls()
 	{
 	
 		Button editWorld = new Button("Edit");
 		Button deleteWorld = new Button("Delete");
-		editWorld.setStyleName("floatTop");
-		deleteWorld.setStyleName("floatTop");
-		mGrid.setWidget(0, 1, editWorld);
-		mGrid.setWidget(0, 2, deleteWorld);
+		Button initializeWorld = new Button("Initialize");
+		
+		editWorld.setStyleName("worldManagerButton");
+		deleteWorld.setStyleName("worldManagerButton");
+		initializeWorld.setStyleName("worldManagerButton");
+		
+		AbsolutePanel buttonContainer = new AbsolutePanel();
+		buttonContainer.setWidth("300px");
+		
+		
+		buttonContainer.add(initializeWorld);
+		buttonContainer.add(deleteWorld);
+		buttonContainer.add(editWorld);
+		mGrid.setWidget(1, 0, buttonContainer);
 		
 	deleteWorld.addClickHandler(new DeleteListHandler());
 	editWorld.addClickHandler(new EditListHandler());

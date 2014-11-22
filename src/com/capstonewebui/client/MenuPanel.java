@@ -20,12 +20,14 @@ public class MenuPanel extends AbsolutePanel{
 		Button buildWorldButton = new Button("Create World");
 		
 		Button manageWorldsButton = new Button("Manage Worlds");
-		manageWorldsButton.setStyleName("alignedCenter");
 		Button interactButton = new Button("Interact with Players");
-		interactButton.setStyleName("alignedCenter");
 		Button tutorialButton = new Button("Tutorial");
-		tutorialButton.setStyleName("alignedCenter");
-		menuGrid.getCellFormatter();
+		
+		
+		buildWorldButton.setStyleName("menuButton");
+		manageWorldsButton.setStyleName("menuButton");
+		interactButton.setStyleName("menuButton");
+		tutorialButton.setStyleName("menuButton");
 		
 		menuGrid.setWidget(0,0, buildWorldButton);
 		menuGrid.setWidget(1,0, manageWorldsButton);

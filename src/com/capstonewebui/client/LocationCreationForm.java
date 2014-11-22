@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -52,11 +53,12 @@ public class LocationCreationForm extends AbsolutePanel{
 		addLabelToPanel();
 		addSecondColumnContent();
 		addThirdColumn();
-		addNavigationButtons();
+		
 		
 		this.add(worldBuilderGrid);
 		addAvailableLocationsHeader();
 		setUpMapPanel();
+		addNavigationButtons();
 		
 	}
 	
@@ -126,7 +128,7 @@ public class LocationCreationForm extends AbsolutePanel{
 		
 		longitudeTB = new TextBox();
 		
-		AbsolutePanel longitudeContainer = new AbsolutePanel();
+		FlowPanel longitudeContainer = new FlowPanel();
 		Button map2Button = new Button("->");
 		longitudeContainer.add(longitudeTB);
 		longitudeContainer.add(map2Button);
@@ -184,7 +186,7 @@ public class LocationCreationForm extends AbsolutePanel{
 		Button discardButton = new Button("Discard");
 		
 		
-		AbsolutePanel navigationButtonsContainer= new AbsolutePanel();
+		FlowPanel navigationButtonsContainer= new FlowPanel();
 		navigationButtonsContainer.add(acceptButton);
 		navigationButtonsContainer.add(discardButton);
 		
@@ -192,7 +194,7 @@ public class LocationCreationForm extends AbsolutePanel{
 		discardButton.addClickHandler(new CancelLocationHandler());
 		acceptButton.addClickHandler(new SaveLocationHandler());
 		
-		navigationButtonsContainer.setStyleName("navigationButtonsContainer");
+		navigationButtonsContainer.setStyleName("locationCreationButtonsContainer");
 		this.add(navigationButtonsContainer);
 	}
 	
@@ -240,6 +242,13 @@ public class LocationCreationForm extends AbsolutePanel{
 		String locationsToUnlockString = "{";
 		String locationName = "";
 		byte rowCount = (byte) locationsToUnlock.getRowCount();
+		
+		if(rowCount == 1)
+		{
+			locationsToUnlockString = "{}";
+			locationsToRetireString = "{}";
+		}
+		
 		for(int i = 1; i < rowCount; i++)
 		{
 			
@@ -261,7 +270,7 @@ public class LocationCreationForm extends AbsolutePanel{
 			if(cb.getValue() == true)
 			{
 				
-				if(locationsToUnlockString.compareTo("{") == 0)
+				if(locationsToRetireString.compareTo("{") == 0)
 					locationsToRetireString = locationsToRetireString + locationsToUnlock.getText(i, 0);
 				else
 					locationsToRetireString = locationsToRetireString + "," + locationsToUnlock.getText(i, 0);
@@ -272,9 +281,10 @@ public class LocationCreationForm extends AbsolutePanel{
 				locationsToUnlockString = locationsToUnlockString + "}";
 				locationsToRetireString = locationsToRetireString + "}";
 			}
-			location.setLocationToUnlock(locationsToUnlockString);
-			location.setLocationToRetire(locationsToRetireString);
 		}
+		
+		location.setLocationToUnlock(locationsToUnlockString);
+		location.setLocationToRetire(locationsToRetireString);
 	}
 	
 	

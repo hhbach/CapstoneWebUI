@@ -145,11 +145,10 @@ public class WorldCreationForm extends AbsolutePanel {
 	
 	private void assembleFlexTable(){
 		locationsFlexTable.setText(0, 0, "#");
-		//locationsFlexTable.setText(0, 1, "Location");
-		locationsFlexTable.setText(0, 2, "Unlocks");
-		locationsFlexTable.setText(0, 3, "Retireds");
+		locationsFlexTable.setText(0, 1, "Unlocks");
+		locationsFlexTable.setText(0, 2, "Retireds");
+		locationsFlexTable.setText(0, 3, "");
 		locationsFlexTable.setText(0, 4, "");
-		locationsFlexTable.setText(0, 5, "");
 	}
 	
 	private boolean addLocationToArray(LocationObject location) //verify that the new location is unique before adding it
@@ -175,9 +174,11 @@ public class WorldCreationForm extends AbsolutePanel {
 		byte locationsCount = (byte) locationsFlexTable.getRowCount();
 		for(int i = 0; i < locationsCount; i++)
 		{
-			if(locationsFlexTable.getText(i, i).compareTo(location.getLocationName()) == 0)
+			if(locationsFlexTable.getText(i, 0).compareTo(location.getLocationName()) == 0)
 			{
-				locationsFlexTable.setText(i, 1, location.getLongitude() + "," + location.getLatitude());		
+				locationsFlexTable.setText(i, 1, location.getLocationToUnlock());
+				locationsFlexTable.setText(i, 2, location.getLocationToRetire());
+				//locationsFlexTable.setText(row, column, text)
 			}
 		}
 		
@@ -188,16 +189,16 @@ public class WorldCreationForm extends AbsolutePanel {
 		
 		if(addLocationToArray(location)) // if location is already found in the array
 		{
+			System.out.println("Exists in Flex Table");
 			updateLocationInFlexTable(location);
 		}
 		else
 		{
+			System.out.println("Does not exist in Flex Table");
 			int row = locationsFlexTable.getRowCount();
 			locationsFlexTable.setText(row, 0, location.getLocationName());
-			//locationsFlexTable.setText(row, 1, location.getLongitude() + "," + location.getLatitude());
-			locationsFlexTable.setText(row, 2, location.getLocationToUnlock());
-			locationsFlexTable.setText(row, 3, location.getLocationToRetire());
-			//locationsFlexTable.setText(row, 2, "Edit/Delete");
+			locationsFlexTable.setText(row, 1, location.getLocationToUnlock());
+			locationsFlexTable.setText(row, 2, location.getLocationToRetire());
 			Button deleteButton = new Button("Delete");
 			Button editButton = new Button("Edit");
 		
@@ -226,8 +227,8 @@ public class WorldCreationForm extends AbsolutePanel {
 					
 				}
 			});
-			locationsFlexTable.setWidget(row, 4, editButton);
-			locationsFlexTable.setWidget(row, 5, deleteButton);
+			locationsFlexTable.setWidget(row, 3, editButton);
+			locationsFlexTable.setWidget(row, 4, deleteButton);
 		
 		}
 
