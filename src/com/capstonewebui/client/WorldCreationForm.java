@@ -47,6 +47,7 @@ public class WorldCreationForm extends AbsolutePanel {
 	private Label nameLabel = new Label("Name:");
 	private Label descriptionLabel = new Label("Description:");
 	private ArrayList<String> locations = new ArrayList<String>();
+	private ArrayList<String> deleteQueue = new ArrayList<String>();
 	private MapWidget map;
 	
 	public WorldCreationForm() {
@@ -133,6 +134,7 @@ public class WorldCreationForm extends AbsolutePanel {
 	
 	private void clearPanel()
 	{
+		deleteQueue = new ArrayList<String>();
 		locationsArray = new ArrayList<LocationObject>();
 		nameTextBox.setText("");
 		descriptionTextBox.setText("");
@@ -176,8 +178,8 @@ public class WorldCreationForm extends AbsolutePanel {
 		{
 			if(locationsFlexTable.getText(i, 0).compareTo(location.getLocationName()) == 0)
 			{
-				locationsFlexTable.setText(i, 1, location.getLocationToUnlock());
-				locationsFlexTable.setText(i, 2, location.getLocationToRetire());
+				locationsFlexTable.setText(i, 1, location.getLocationToUnlock().toString());
+				locationsFlexTable.setText(i, 2, location.getLocationToRetire().toString());
 				//locationsFlexTable.setText(row, column, text)
 			}
 		}
@@ -197,8 +199,8 @@ public class WorldCreationForm extends AbsolutePanel {
 			System.out.println("Does not exist in Flex Table");
 			int row = locationsFlexTable.getRowCount();
 			locationsFlexTable.setText(row, 0, location.getLocationName());
-			locationsFlexTable.setText(row, 1, location.getLocationToUnlock());
-			locationsFlexTable.setText(row, 2, location.getLocationToRetire());
+			locationsFlexTable.setText(row, 1, location.getLocationToUnlock().toString());
+			locationsFlexTable.setText(row, 2, location.getLocationToRetire().toString());
 			Button deleteButton = new Button("Delete");
 			Button editButton = new Button("Edit");
 		
@@ -206,6 +208,9 @@ public class WorldCreationForm extends AbsolutePanel {
 			deleteButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
+					deleteQueue.add(location.getLocationName());
+					removeLocation(location.getLocationName());
+					/*
 					CapstoneWebUI.databaseService.deleteLocation(location.getLocationName(),
 							new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
@@ -215,6 +220,7 @@ public class WorldCreationForm extends AbsolutePanel {
 							}
 							
 					});
+					*/
 				}
 			});
 			
@@ -297,6 +303,7 @@ public class WorldCreationForm extends AbsolutePanel {
 			WorldObject mWorld = new WorldObject();
 			mWorld.setWorldName(nameTextBox.getText());
 			mWorld.setWorldDescription(descriptionTextBox.getText());
+			mWorld.setUserID("lincoln.turley@gmail.com");
 			
 			System.out.println("Locations Queued to be saved:" + locationsArray.size());
 
@@ -326,6 +333,23 @@ public class WorldCreationForm extends AbsolutePanel {
 					clearPanel();
 				}
 			});
+			
+			byte deleteQueueSize = (byte) deleteQueue.size();
+			for(int i = 0; i < deleteQueueSize; i++)
+			{
+				final String locationName = deleteQueue.get(i);
+				
+				CapstoneWebUI.databaseService.deleteLocation(locationName,
+						new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+						}
+						public void onSuccess(String result) {
+							//removeLocation(locationName);
+							System.out.println("Successfully deleted: " + locationName);
+						}
+						
+				});
+			}
 
 		}
 		
@@ -349,10 +373,13 @@ public class WorldCreationForm extends AbsolutePanel {
 	public void loadWorldInformation(String worldInfo)
 	{
 		clearPanel();
-		String[] worldInfoString = worldInfo.split(",");
-		
-		nameTextBox.setText(worldInfoString[0]);
-		descriptionTextBox.setText(worldInfoString[1]);
+			
+			System.out.println("The world Info is " + worldInfo);
+			
+			String[] worldInfoString = worldInfo.split(",");
+			
+			nameTextBox.setText(worldInfoString[0]);
+			//descriptionTextBox.setText(worldInfoString[1]);
 		
 	}
 	
@@ -399,20 +426,47 @@ public class WorldCreationForm extends AbsolutePanel {
 					final LocationObject newLocation = new LocationObject();
 					newLocation.setLocationName(location);
 					String[] resultValues = result.split("\n");
-					String[] longitude = resultValues[6].split(" = ");
-					String[] latitude = resultValues[5].split(" = ");
-					String[] unlocks = resultValues[3].split(" = ");
-					String[] retires = resultValues[10].split(" = ");
-					String[] descriptionString= resultValues[2].split(" = ");
+					String[] longitude = resultValues[8].split(" = ");
+					String[] latitude = resultValues[9].split(" = ");
+					String[] unlocks = resultValues[7].split(" = ");
+					String[] retires = resultValues[4].split(" = ");
+					String[] descriptionString= resultValues[5].split(" = ");
 					
 					newLocation.setLocationDescription(descriptionString[1].replace(" ", ""));
 					newLocation.setLatitude(latitude[1].toString());
 					newLocation.setLongitude(longitude[1].toString());
-					newLocation.setLocationToUnlock(unlocks[1].replace(" ", ""));
-					newLocation.setLocationToRetire(retires[1].replace(" ", ""));
+					
+					System.out.println("location Array is: " + ArrayStringToArrayList(unlocks[1]).toString());
+					newLocation.setLocationToUnlock(ArrayStringToArrayList(unlocks[1]));
+					newLocation.setLocationToRetire(ArrayStringToArrayList(retires[1]));
+
 					addLocation(newLocation);
 				}
 			});
 		}
+	}
+	
+	private ArrayList<String> ArrayStringToArrayList(String ArrayString)
+	{
+		/**
+			this function will take a an arrayString and return an arrayList
+		 */
+		
+		ArrayList<String> a = new ArrayList<String>();
+		if(!ArrayString.contains("null"))
+		{
+			String tempString = ArrayString.replace(" ", ""); //get rid of all spaces;
+			tempString = tempString.replace("[", ""); //get rid of [
+			tempString = tempString.replace("]", "");
+			
+			String[] tempArray = tempString.split(","); //split the words by ','
+			
+			
+			for(int i = 0; i < tempArray.length; i++)
+			{
+				a.add(tempArray[i]);
+			}
+		}
+		return a;
 	}
 }

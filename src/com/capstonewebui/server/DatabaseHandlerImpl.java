@@ -34,25 +34,29 @@ DatabaseHandler {
 	
 	private Entity createWorldEntity(WorldObject world)
 	{
-		Entity w = new Entity("world", world.getWorldName());
-		w.setProperty("Name", world.getWorldName());
-		w.setProperty("Description", world.getWorldDescription());
+		String world_id = world.getWorldName().replace(" ", "_");
+		Entity w = new Entity("world", "name=" + world.getWorldName());
+		w.setProperty("name", world.getWorldName());
+		w.setProperty("description", world.getWorldDescription());
+		w.setProperty("user_id", world.getUserID());
+		w.setProperty("world_id", world_id);
 		return w;
 	}
 	
 	private Entity createLocationEntity(LocationObject location)
 	{
-		Entity w = new Entity("location", location.getLocationName());
-		w.setProperty("Name", location.getLocationName());
-		w.setProperty("LocationDescription", location.getLocationDescription());
-		w.setProperty("Latitude",location.getLatitude());
-		w.setProperty("Longitude", location.getLongitude());
-		w.setProperty("DisoverRadius", location.getDisoveryRadius());
-		w.setProperty("Locked", location.isLocked());
-		w.setProperty("Visited", location.isLocked());
-		w.setProperty("LocationsToUnlock", location.getLocationToUnlock());
-		w.setProperty("LocationsToLock", location.getLocationToRetire());
-		w.setProperty("World", location.getWorld());
+		Entity w = new Entity("location", "name=" + location.getLocationName());
+		w.setProperty("name", location.getLocationName());
+		w.setProperty("loc_id", location.getLocationName().replace(" ", "_"));
+		w.setProperty("description", location.getLocationDescription());
+		w.setProperty("latitude",location.getLatitude());
+		w.setProperty("longitude", location.getLongitude());
+		w.setProperty("unlock_threshold", location.getDisoveryRadius());
+		w.setProperty("locked", location.isLocked());
+		w.setProperty("visited", "false");
+		w.setProperty("locations_to_unlock", location.getLocationToUnlock());
+		w.setProperty("locations_to_lock", location.getLocationToRetire());
+		w.setProperty("world_name", location.getWorld());
 		return w;
 	}
 
@@ -99,14 +103,14 @@ DatabaseHandler {
 		
 		String worlds = "";
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Query q = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		Query q = new Query("world").addSort("name", SortDirection.ASCENDING);
 		
 		
 		PreparedQuery pq = dss.prepare(q);
 		
 		for (Entity result : pq.asIterable()) {
 			
-			String world = (String) result.getProperty("Name");
+			String world = (String) result.getProperty("name");
 			if(worlds.compareTo("") == 0)
 				worlds = world;
 			else
@@ -121,16 +125,16 @@ DatabaseHandler {
 		
 		String locations = "";
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Filter worldFilter =   new FilterPredicate("World",FilterOperator.EQUAL, worldName);
-		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		Filter worldFilter =   new FilterPredicate("world_name",FilterOperator.EQUAL, worldName);
+		Query q = new Query("location").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(worldFilter);
 		PreparedQuery pq = dss.prepare(q);
 		for (Entity result : pq.asIterable()) {
 			
 			if(locations.compareTo("") == 0)
-				locations = (String)result.getProperty("Name");
+				locations = (String)result.getProperty("name");
 			else
-				locations = locations + "," + (String)result.getProperty("Name");
+				locations = locations + "," + (String)result.getProperty("name");
 		}
 		
 		return locations;
@@ -140,9 +144,10 @@ DatabaseHandler {
 	@Override
 	public String getLocation(String locationName) throws IllegalArgumentException {
 		String locations = "";
+		System.out.println("location name to get from server is: " + locationName);
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, locationName);
-		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		Filter worldFilter =   new FilterPredicate("name",FilterOperator.EQUAL, locationName);
+		Query q = new Query("location").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(worldFilter);
 		PreparedQuery pq = dss.prepare(q);
 		
@@ -154,13 +159,13 @@ DatabaseHandler {
 		
 		String worldInfo = "";
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, worldName);
-		Query q = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		Filter worldFilter =   new FilterPredicate("name",FilterOperator.EQUAL, worldName);
+		Query q = new Query("world").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(worldFilter);
 		PreparedQuery pq = dss.prepare(q);
 		
 		for (Entity result : pq.asIterable()) {
-			worldInfo = (String)result.getProperty("Name") + "," +  (String)result.getProperty("Description");
+			worldInfo = (String)result.getProperty("name") + "," +  (String)result.getProperty("description");
 			
 		}
 
@@ -175,8 +180,8 @@ DatabaseHandler {
 		
 		String worldInfo = "";
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Filter worldFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, locationName);
-		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		Filter worldFilter =   new FilterPredicate("name",FilterOperator.EQUAL, locationName);
+		Query q = new Query("location").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(worldFilter);
 		PreparedQuery pq = dss.prepare(q);
 		
@@ -195,8 +200,8 @@ DatabaseHandler {
 			throws IllegalArgumentException {
 		
 		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
-		Filter worldFilter =   new FilterPredicate("World",FilterOperator.EQUAL, worldName);
-		Query q = new Query("location").addSort("Name", SortDirection.ASCENDING);
+		Filter worldFilter =   new FilterPredicate("world_name",FilterOperator.EQUAL, worldName);
+		Query q = new Query("location").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(worldFilter);
 		PreparedQuery pq = dss.prepare(q);
 		for (Entity result : pq.asIterable()) {
@@ -205,8 +210,8 @@ DatabaseHandler {
 		
 		
 		
-		Filter nameFilter =   new FilterPredicate("Name",FilterOperator.EQUAL, worldName);
-		Query worldQuery = new Query("world").addSort("Name", SortDirection.ASCENDING);
+		Filter nameFilter =   new FilterPredicate("name",FilterOperator.EQUAL, worldName);
+		Query worldQuery = new Query("world").addSort("name", SortDirection.ASCENDING);
 		q.setFilter(nameFilter);
 		PreparedQuery preparedWorldQuery = dss.prepare(worldQuery);
 		

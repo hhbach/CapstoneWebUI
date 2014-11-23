@@ -1,6 +1,7 @@
 package com.capstonewebui.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class LocationObject implements Serializable{
 
@@ -13,8 +14,8 @@ public class LocationObject implements Serializable{
 	private String world;
 	private boolean  visited;
 	private boolean locked;
-	private String locationToUnlock;
-	private String locationToRetire;
+	private ArrayList<String> locationToUnlock;
+	private ArrayList<String>  locationToRetire;
 	
 	public String getLocationId() {
 		return locationId;
@@ -70,16 +71,16 @@ public class LocationObject implements Serializable{
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
-	public String getLocationToUnlock() {
+	public ArrayList<String> getLocationToUnlock() {
 		return locationToUnlock;
 	}
-	public void setLocationToUnlock(String locationToUnlock) {
+	public void setLocationToUnlock(ArrayList<String> locationToUnlock) {
 		this.locationToUnlock = locationToUnlock;
 	}
-	public String getLocationToRetire() {
+	public ArrayList<String> getLocationToRetire() {
 		return locationToRetire;
 	}
-	public void setLocationToRetire(String locationToRetire) {
+	public void setLocationToRetire(ArrayList<String> locationToRetire) {
 		this.locationToRetire = locationToRetire;
 	}
 }

@@ -69,9 +69,11 @@ public class ManageWorldsPanel extends AbsolutePanel{
 		buttonContainer.add(deleteWorld);
 		buttonContainer.add(editWorld);
 		mGrid.setWidget(1, 0, buttonContainer);
-		
-	deleteWorld.addClickHandler(new DeleteListHandler());
-	editWorld.addClickHandler(new EditListHandler());
+	
+		//adding the handlers to each button
+		deleteWorld.addClickHandler(new DeleteListHandler());
+		editWorld.addClickHandler(new EditListHandler());
+		initializeWorld.addClickHandler(new InitializeWorldHandler());
 	}
 	
 	private void getWorlds(String[] worlds)
@@ -126,6 +128,7 @@ public class ManageWorldsPanel extends AbsolutePanel{
 								System.out.println(caught);
 							}
 							public void onSuccess(String result) {
+								System.out.println("The info for the selected world is: " + result);
 								CapstoneWebUI.worldCreationForm.loadWorldInformation(result);
 							}
 							
@@ -141,25 +144,34 @@ public class ManageWorldsPanel extends AbsolutePanel{
 							CapstoneWebUI.worldManagerPanel.setVisible(false);
 							CapstoneWebUI.worldCreationForm.setVisible(true);
 						}
-						
 				});
 			}
 		}
 		
 		public void onKeyUp(KeyUpEvent event) {
 			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-				
 			}
 		}
 		
 		private void editWorld() {
 				System.out.println(worldsList.getValue(worldsList.getSelectedIndex()));
 			}
-
 		}
-	
-	
 
+	class InitializeWorldHandler implements ClickHandler
+	{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			if(worldsList.getSelectedIndex()  >= 0)
+			{
+				System.out.println("running world " +worldsList.getValue(worldsList.getSelectedIndex()));
+				//Brian's code goes here
+			}
+			
+		}
+		
+	}
 
 
 }

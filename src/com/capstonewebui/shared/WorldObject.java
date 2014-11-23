@@ -6,7 +6,7 @@ public class WorldObject implements Serializable {
 
 	String worldName;
 	String worldDescription;
-	String[] locations;
+	String userID;
 	public String getWorldName() {
 		return worldName;
 	}
@@ -19,10 +19,10 @@ public class WorldObject implements Serializable {
 	public void setWorldDescription(String worldDescription) {
 		this.worldDescription = worldDescription;
 	}
-	public String[] getLocations() {
-		return locations;
+	public String getUserID() {
+		return userID;
 	}
-	public void setLocations(String[] locations) {
-		this.locations = locations;
+	public void setUserID(String userID1) {
+		this.userID = userID1;
 	}
 }

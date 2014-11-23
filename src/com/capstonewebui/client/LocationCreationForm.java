@@ -40,8 +40,9 @@ public class LocationCreationForm extends AbsolutePanel{
 	private FlexTable worldBuilderGrid;
 	private CheckBox lockedCB;
 	private PopupPanel mapPanel;
-	private ListBox locationsToRetire;
-	private FlexTable locationsToUnlock;
+	private TextBox discoveryRadiusTB;
+	//private ListBox locationsToRetire;
+	private FlexTable dependentLocationsFlexTable;
 	
 	public LocationCreationForm() {
 		this.setVisible(false);
@@ -76,7 +77,7 @@ public class LocationCreationForm extends AbsolutePanel{
 	    map = new MapWidget(cawkerCity, 2);
 	    map.setSize("600px", "600px");
 	    // Add some controls for the zoom level
-	    map.addControl(new LargeMapControl());
+	    //map.addControl(new LargeMapControl());
 
 	    mapControlPanel.add(closeButton);
 	    dock.addNorth(map, 600);
@@ -139,7 +140,7 @@ public class LocationCreationForm extends AbsolutePanel{
 		latitudeTB = new TextBox();
 		worldBuilderGrid.setWidget(4, 1, latitudeTB);
 		
-		TextBox discoveryRadiusTB = new TextBox();
+		discoveryRadiusTB = new TextBox();
 		discoveryRadiusTB.setText("meters");
 		worldBuilderGrid.setWidget(5, 1, discoveryRadiusTB);
 
@@ -153,17 +154,17 @@ public class LocationCreationForm extends AbsolutePanel{
 	//this consists "id", "longitude/latitude", and "edit/add" buttons
 	private void addAvailableLocationsHeader()
 	{
-		locationsToUnlock = new FlexTable();
+		dependentLocationsFlexTable = new FlexTable();
 		worldBuilderGrid.getFlexCellFormatter().setColSpan(9, 0, 2);
-		worldBuilderGrid.setWidget(9,0, locationsToUnlock);
+		worldBuilderGrid.setWidget(9,0, dependentLocationsFlexTable);
 		
-		locationsToUnlock.getColumnFormatter().setWidth(0, "26px");
-		locationsToUnlock.getColumnFormatter().setWidth(1, "125px");
-		locationsToUnlock.getColumnFormatter().setWidth(2, "81px");
-		locationsToUnlock.getRowFormatter().addStyleName(0, "locationListHeader");
-		locationsToUnlock.setText(0, 0, "Locations");
-		locationsToUnlock.setText(0, 1, "Unlock");
-		locationsToUnlock.setText(0, 2, "Retire");
+		dependentLocationsFlexTable.getColumnFormatter().setWidth(0, "26px");
+		dependentLocationsFlexTable.getColumnFormatter().setWidth(1, "125px");
+		dependentLocationsFlexTable.getColumnFormatter().setWidth(2, "81px");
+		dependentLocationsFlexTable.getRowFormatter().addStyleName(0, "locationListHeader");
+		dependentLocationsFlexTable.setText(0, 0, "Locations");
+		dependentLocationsFlexTable.setText(0, 1, "Unlock");
+		dependentLocationsFlexTable.setText(0, 2, "Retire");
 	}
 	
 	//third column houses optional option for each field.
@@ -178,6 +179,16 @@ public class LocationCreationForm extends AbsolutePanel{
 		descriptionTB.setText("");
 		longitudeTB.setText("");
 		latitudeTB.setText("");
+		lockedCB.setValue(false);
+		
+		byte dependentTableSize = (byte)dependentLocationsFlexTable.getRowCount();
+		
+		for(int i = 1; i < dependentTableSize; i++)
+		{
+			dependentLocationsFlexTable.removeRow(i);
+		}
+		
+		
 	}
 	
 	private void addNavigationButtons()
@@ -238,53 +249,35 @@ public class LocationCreationForm extends AbsolutePanel{
 	
 	private void buildDepedency(LocationObject location)
 	{
-		String locationsToRetireString = "{";
-		String locationsToUnlockString = "{";
+		ArrayList<String> locationsToRetireArray = new ArrayList<String>(); 
+		ArrayList<String> locationsToUnlockArray = new ArrayList<String>(); 
 		String locationName = "";
-		byte rowCount = (byte) locationsToUnlock.getRowCount();
+		byte rowCount = (byte) dependentLocationsFlexTable.getRowCount();
 		
-		if(rowCount == 1)
-		{
-			locationsToUnlockString = "{}";
-			locationsToRetireString = "{}";
-		}
 		
 		for(int i = 1; i < rowCount; i++)
 		{
 			
 			
-			System.out.println("collumn " + i + "has: " + locationsToUnlock.getCellCount(i));
+			System.out.println("collumn " + i + "has: " + dependentLocationsFlexTable.getCellCount(i));
 			
-			CheckBox cb = (CheckBox) locationsToUnlock.getWidget(i, 1);
+			CheckBox cb = (CheckBox) dependentLocationsFlexTable.getWidget(i, 1);
 			if(cb.getValue() == true)
 			{
-				if(locationsToUnlockString.compareTo("{") == 0)
-					locationsToUnlockString = locationsToUnlockString + locationsToUnlock.getText(i, 0);
-				else
-					locationsToUnlockString = locationsToUnlockString + "," + locationsToUnlock.getText(i, 0);
-
+				locationsToUnlockArray.add(dependentLocationsFlexTable.getText(i, 0));
 			}
 			
 			
-			cb = (CheckBox) locationsToUnlock.getWidget(i, 2);
+			cb = (CheckBox) dependentLocationsFlexTable.getWidget(i, 2);
 			if(cb.getValue() == true)
 			{
-				
-				if(locationsToRetireString.compareTo("{") == 0)
-					locationsToRetireString = locationsToRetireString + locationsToUnlock.getText(i, 0);
-				else
-					locationsToRetireString = locationsToRetireString + "," + locationsToUnlock.getText(i, 0);
+				locationsToRetireArray.add(dependentLocationsFlexTable.getText(i, 0));
 			}
 			
-			if(i == rowCount - 1)
-			{
-				locationsToUnlockString = locationsToUnlockString + "}";
-				locationsToRetireString = locationsToRetireString + "}";
-			}
 		}
 		
-		location.setLocationToUnlock(locationsToUnlockString);
-		location.setLocationToRetire(locationsToRetireString);
+		location.setLocationToUnlock(locationsToUnlockArray);
+		location.setLocationToRetire(locationsToRetireArray);
 	}
 	
 	
@@ -297,9 +290,9 @@ public class LocationCreationForm extends AbsolutePanel{
 		nameTB.setText("");
 		lockedCB.setValue(false);
 		
-		for(int i = 1; i < locationsToUnlock.getRowCount(); i++)
+		for(int i = 1; i < dependentLocationsFlexTable.getRowCount(); i++)
 		{
-			locationsToUnlock.removeAllRows();
+			dependentLocationsFlexTable.removeAllRows();
 			addAvailableLocationsHeader();
 		}
 	}
@@ -313,11 +306,11 @@ public class LocationCreationForm extends AbsolutePanel{
 			
 			if(locations.get(i-1).getLocationName().compareTo(nameTB.getText()) != 0)
 			{
-				locationsToUnlock.setText(vacantRow,0,locations.get(i-1).getLocationName());
+				dependentLocationsFlexTable.setText(vacantRow,0,locations.get(i-1).getLocationName());
 				CheckBox unlock = new CheckBox();
 				CheckBox retire = new CheckBox();
-				locationsToUnlock.setWidget(vacantRow, 1, unlock);
-				locationsToUnlock.setWidget(vacantRow, 2, retire);
+				dependentLocationsFlexTable.setWidget(vacantRow, 1, unlock);
+				dependentLocationsFlexTable.setWidget(vacantRow, 2, retire);
 				vacantRow = (byte) (vacantRow + 1);
 			}
 		}
@@ -363,6 +356,7 @@ public class LocationCreationForm extends AbsolutePanel{
 			location.setLongitude(longitudeTB.getText());
 			location.setLatitude(latitudeTB.getText());
 			location.setLocked(lockedCB.getValue());
+			location.setDisoveryRadius(discoveryRadiusTB.getValue());
 			buildDepedency(location);
 
 			CapstoneWebUI.worldCreationForm.addLocation(location);
