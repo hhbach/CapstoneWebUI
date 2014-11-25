@@ -5,7 +5,7 @@ import com.capstonewebui.shared.WorldObject;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("greet")
+@RemoteServiceRelativePath("capstoneWebUI")
 public interface DatabaseHandler extends RemoteService {
 	String greetServer(String name) throws IllegalArgumentException;	
 	String storeLocation(LocationObject object) throws IllegalArgumentException;
