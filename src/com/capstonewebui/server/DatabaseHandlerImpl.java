@@ -16,7 +16,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gwt.maps.client.impl.GeocoderImpl.LocationsCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 

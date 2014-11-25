@@ -143,6 +143,7 @@ public class ManageWorldsPanel extends AbsolutePanel{
 							CapstoneWebUI.worldCreationForm.loadLocations(result);
 							CapstoneWebUI.worldManagerPanel.setVisible(false);
 							CapstoneWebUI.worldCreationForm.setVisible(true);
+							CapstoneWebUI.worldCreationForm.resizeMap();
 						}
 				});
 			}

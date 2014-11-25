@@ -25,7 +25,9 @@ body {
   margin: 10px;
   border: 0px;
   padding: 0px;
-  background: #fff;
+  background-image: url("../mapBackGround.jpg");
+  background-size: 100% 80%;
+  background-repeat: no-repeat;
   direction: ltr;
 }
 a, a:visited {

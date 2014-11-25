@@ -1,7 +1,5 @@
 package com.capstonewebui.client;
 
-import sun.security.acl.WorldGroupImpl;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -80,6 +78,7 @@ public class MenuPanel extends AbsolutePanel{
 			CapstoneWebUI.menuPanel.setVisible(false);
 			CapstoneWebUI.worldCreationForm.setVisible(true);
 			CapstoneWebUI.worldCreationForm.generateNewWorld();
+			CapstoneWebUI.worldCreationForm.resizeMap();
 			}
 
 		}
