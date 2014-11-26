@@ -140,6 +140,7 @@ DatabaseHandler {
 	}
 
 
+	/*
 	@Override
 	public String getLocation(String locationName) throws IllegalArgumentException {
 		String locations = "";
@@ -151,6 +152,38 @@ DatabaseHandler {
 		PreparedQuery pq = dss.prepare(q);
 		
 		return pq.asSingleEntity().toString();
+	}
+	*/
+	
+	
+	@Override
+	public LocationObject getLocation(String locationName) throws IllegalArgumentException {
+		LocationObject locationO = new LocationObject();
+		System.out.println("location name to get from server is: " + locationName);
+		DatastoreService dss = DatastoreServiceFactory.getDatastoreService();
+		Filter worldFilter =   new FilterPredicate("name",FilterOperator.EQUAL, locationName);
+		Query q = new Query("location").addSort("name", SortDirection.ASCENDING);
+		q.setFilter(worldFilter);
+		PreparedQuery pq = dss.prepare(q);
+		
+		Entity tempEntity = pq.asSingleEntity();
+		locationO.setLocationDescription((String)tempEntity.getProperty("description"));
+		locationO.setLongitude((String)tempEntity.getProperty("longitude"));
+		locationO.setLatitude((String)tempEntity.getProperty("latitude"));
+		
+		/*
+		String locationsToUnlockString = (String) tempEntity.getProperty("locations_to_unlock");
+		locationsToUnlockString = locationsToUnlockString.replace("[", "");
+		locationsToUnlockString = locationsToUnlockString.replace("]", "");
+		
+		locationsTo
+		*/
+		
+		locationO.setLocationToUnlock((ArrayList<String>)tempEntity.getProperty("locations_to_unlock"));
+		locationO.setLocationToRetire((ArrayList<String>)tempEntity.getProperty("locations_to_lock"));
+		locationO.setLocationName((String)tempEntity.getProperty("name"));
+		
+		return locationO;
 	}
 	
 	@Override

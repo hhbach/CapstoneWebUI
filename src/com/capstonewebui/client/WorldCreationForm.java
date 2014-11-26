@@ -2,6 +2,8 @@ package com.capstonewebui.client;
 
 import com.capstonewebui.shared.LocationObject;
 import com.capstonewebui.shared.WorldObject;
+import com.google.appengine.api.datastore.Entities;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -195,10 +197,12 @@ public class WorldCreationForm extends FlowPanel {
 			System.out.println("Does not exist in Flex Table");
 			int row = locationsFlexTable.getRowCount();
 			locationsFlexTable.setText(row, 0, location.getLocationName());
-			locationsFlexTable.setText(row, 1, location.getLocationToUnlock()
-					.toString());
-			locationsFlexTable.setText(row, 2, location.getLocationToRetire()
-					.toString());
+			
+			if(location.getLocationToUnlock() != null)
+				locationsFlexTable.setText(row, 1, location.getLocationToUnlock().toString());
+			
+			if(location.getLocationToRetire() != null)
+				locationsFlexTable.setText(row, 2, location.getLocationToRetire().toString());
 			Button deleteButton = new Button("Delete");
 			Button editButton = new Button("Edit");
 
@@ -406,38 +410,13 @@ public class WorldCreationForm extends FlowPanel {
 		for (byte i = 0; i < locationsNameArray.length; i++) {
 			final String location = locationsNameArray[i];
 			CapstoneWebUI.databaseService.getLocation(locationsNameArray[i],
-					new AsyncCallback<String>() {
+					new AsyncCallback<LocationObject>() {
 						public void onFailure(Throwable caught) {
 							System.out.println(caught);
 						}
-
-						public void onSuccess(String result) {
-							System.out.println(result);
-							final LocationObject newLocation = new LocationObject();
-							newLocation.setLocationName(location);
-							String[] resultValues = result.split("\n");
-							String[] longitude = resultValues[8].split(" = ");
-							String[] latitude = resultValues[9].split(" = ");
-							String[] unlocks = resultValues[7].split(" = ");
-							String[] retires = resultValues[4].split(" = ");
-							String[] descriptionString = resultValues[5]
-									.split(" = ");
-
-							newLocation
-									.setLocationDescription(descriptionString[1]
-											.replace(" ", ""));
-							newLocation.setLatitude(latitude[1].toString());
-							newLocation.setLongitude(longitude[1].toString());
-
-							System.out.println("location Array is: "
-									+ ArrayStringToArrayList(unlocks[1])
-											.toString());
-							newLocation
-									.setLocationToUnlock(ArrayStringToArrayList(unlocks[1]));
-							newLocation
-									.setLocationToRetire(ArrayStringToArrayList(retires[1]));
-
-							addLocation(newLocation);
+						@Override
+						public void onSuccess(LocationObject result) {
+							addLocation(result);
 						}
 					});
 		}

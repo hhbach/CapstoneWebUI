@@ -21,7 +21,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   
   <servlet-mapping>
     <servlet-name>capstoneWebUI</servlet-name>
-    <url-pattern>/capstonewebui/capstoneWebUI</url-pattern>
+    <url-pattern>/capstoneWebUI</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
